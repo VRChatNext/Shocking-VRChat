@@ -1,0 +1,5 @@
+flask
+loguru
+websockets
+python-osc
+pyyaml
