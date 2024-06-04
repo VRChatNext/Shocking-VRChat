@@ -22,9 +22,8 @@ class ShockHandler():
             raise ValueError(f"Not supported mode: {self.shock_mode}")
         
         self.distance_update_time_window = 0.1
-        self.distance_last_strength = 0
+        self.distance_current_strength = 0
 
-        self.last_update_time = 0
         self.to_clear_time    = 0
         self.is_cleared       = True
     
@@ -33,6 +32,8 @@ class ShockHandler():
         asyncio.ensure_future(self.clear_check())
         # if self.shock_mode == 'shock':
         #     asyncio.ensure_future(self.feed_wave())
+        if self.shock_mode == 'distance':
+            asyncio.ensure_future(self.distance_background_wave_feeder())
 
     @staticmethod
     def param_sanitizer(param):
@@ -64,7 +65,7 @@ class ShockHandler():
             # logger.debug(f"{str(self.is_cleared)}, {current_time}, {self.to_clear_time}")
             if not self.is_cleared and current_time > self.to_clear_time:
                 self.is_cleared = True
-                self.distance_last_strength = 0
+                self.distance_current_strength = 0
                 await self.DG_CONN.broadcast_clear_wave(self.channel)
                 logger.info(f'Channel {self.channel}, wave cleared after timeout.')
     
@@ -86,29 +87,47 @@ class ShockHandler():
         assert 0 <= to_   <= 1, "Invalid wave generate."
         from_ = int(100*from_)
         to_   = int(100*to_)
-        
         ret = ["{:02X}".format(freq)]*4
         delta = (to_ - from_) // 4
-        ret += ["{:02X}".format(from_ + delta*i) for i in range(1,5,1)]
+        print(from_,to_,delta)
+        ret += ["{:02X}".format(max(from_ + delta*i, 0)) for i in range(1,5,1)]
         ret = ''.join(ret)
         return json.dumps([ret],separators=(',', ':'))
 
     async def handler_distance(self, distance):
-        current_time = time.time()
-        if current_time - self.last_update_time > self.distance_update_time_window:
-            self.last_update_time = current_time
-            await self.set_clear_after(0.5)
-            strength = 0
-            if distance > self.mode_config['trigger_range']['bottom']:
-                strength = (
-                        distance - self.mode_config['trigger_range']['bottom']
-                    ) / (
-                        self.mode_config['trigger_range']['top'] - self.mode_config['trigger_range']['bottom']
-                    )
-                strength = 1 if strength > 1 else strength
-            wave = self.generate_wave_100ms(self.mode_config['distance']['freq_ms'], self.distance_last_strength, strength)
-            logger.success(f'Channel {self.channel}, strength {self.distance_last_strength:.3f} to {strength:.3f}, Sending {wave}')
-            self.distance_last_strength = strength
+        await self.set_clear_after(1)
+        strength = 0
+        trigger_bottom = self.mode_config['trigger_range']['bottom']
+        trigger_top = self.mode_config['trigger_range']['top']
+        if distance > self.mode_config['trigger_range']['bottom']:
+            strength = (
+                    distance - trigger_bottom
+                ) / (
+                    trigger_top - trigger_bottom
+                )
+            strength = 1 if strength > 1 else strength
+        self.distance_current_strength = strength
+
+    async def distance_background_wave_feeder(self):
+        tick_time_window = self.distance_update_time_window / 20
+        next_tick_time   = 0
+        last_strength    = 0
+        while 1:
+            current_time = time.time()
+            if current_time < next_tick_time:
+                await asyncio.sleep(tick_time_window)
+                continue
+            next_tick_time = current_time + self.distance_update_time_window
+            current_strength = self.distance_current_strength
+            if current_strength == last_strength == 0:
+                continue
+            wave = self.generate_wave_100ms(
+                self.mode_config['distance']['freq_ms'], 
+                last_strength, 
+                current_strength
+            )
+            logger.success(f'Channel {self.channel}, strength {last_strength:.3f} to {current_strength:.3f}, Sending {wave}')
+            last_strength = current_strength
             await self.DG_CONN.broadcast_wave(self.channel, wavestr=wave)
     
     async def send_shock_wave(self, shock_time, shockwave: str):
@@ -124,5 +143,5 @@ class ShockHandler():
             shock_duration = self.mode_config['shock']['duration']
             await self.set_clear_after(shock_duration)
             logger.success(f'Channel {self.channel}: Shocking for {shock_duration} s.')
-            asyncio.create_task(self.send_shock_wave(shock_duration, self.shock_settings['shock']['wave']))
+            asyncio.create_task(self.send_shock_wave(shock_duration, self.mode_config['shock']['wave']))
 
