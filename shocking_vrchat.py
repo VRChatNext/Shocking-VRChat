@@ -192,7 +192,7 @@ def main():
         shock_handlers.append(shock_handler)
         for param in SETTINGS['dglab3'][config_chann_name]['avatar_params']:
             logger.success(f"Channel {chann} 模式：{chann_mode} 增加监听：{param}")
-            dispatcher.map(param, shock_handler)
+            dispatcher.map(param, shock_handler.osc_handler)
 
     th = Thread(target=async_main_wrapper, daemon=True)
     th.start()
