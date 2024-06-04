@@ -1,3 +1,4 @@
+from typing import List
 import asyncio
 import yaml, uuid, os, sys, traceback, time, socket
 from threading import Thread
@@ -128,8 +129,8 @@ async def wshandler(connection):
     await client.serve()
 
 async def async_main():
-    shock_handler_A.start_background_jobs()
-    shock_handler_B.start_background_jobs()
+    for shock_handler in shock_handlers:
+        shock_handler.start_background_jobs()
     server = AsyncIOOSCUDPServer((SETTINGS["osc"]["listen_host"], SETTINGS["osc"]["listen_port"]), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()
     # await wsserve(wshandler, "127.0.0.1", 8765)
@@ -152,7 +153,7 @@ class ConfigFileInited(Exception):
 
 def config_init():
     logger.info(f'Init settings..., Config filename: {CONFIG_FILENAME_BASIC} {CONFIG_FILENAME}, Config version: {CONFIG_FILE_VERSION}.')
-    global SETTINGS, SERVER_IP
+    global SETTINGS, SETTINGS_BASIC, SERVER_IP
     if not (os.path.exists(CONFIG_FILENAME) and os.path.exists(CONFIG_FILENAME_BASIC)):
         SETTINGS['ws']['master_uuid'] = str(uuid.uuid4())
         config_save()
@@ -171,6 +172,7 @@ def config_init():
     SERVER_IP = SETTINGS['SERVER_IP'] or get_current_ip()
 
     for chann in ['channel_a', 'channel_b']:
+        SETTINGS['dglab3'][chann]['avatar_params'] = SETTINGS_BASIC['dglab3'][chann]['avatar_params']
         SETTINGS['dglab3'][chann]['mode'] = SETTINGS_BASIC['dglab3'][chann]['mode']
         SETTINGS['dglab3'][chann]['strength_limit'] = SETTINGS_BASIC['dglab3'][chann]['strength_limit']
 
@@ -179,16 +181,18 @@ def config_init():
     logger.success("配置文件初始化完成，Websocket服务需要监听外来连接，如弹出防火墙提示，请点击允许访问。")
 
 def main():
-    global shock_handler_A, shock_handler_B
-    shock_handler_A = ShockHandler(SETTINGS=SETTINGS, DG_CONN = DGConnection, channel_name='A')
-    shock_handler_B = ShockHandler(SETTINGS=SETTINGS, DG_CONN = DGConnection, channel_name='B')
-
-    global dispatcher
+    global dispatcher, shock_handlers
     dispatcher = Dispatcher()
-    for param in SETTINGS_BASIC['dglab3']['channel_a']['avatar_params']:
-        dispatcher.map(param, shock_handler_A.osc_handler)
-    for param in SETTINGS_BASIC['dglab3']['channel_b']['avatar_params']:
-        dispatcher.map(param, shock_handler_B.osc_handler)
+    shock_handlers = []
+
+    for chann in ['A', 'B']:
+        config_chann_name = f'channel_{chann.lower()}'
+        chann_mode = SETTINGS['dglab3'][config_chann_name]['mode']
+        shock_handler = ShockHandler(SETTINGS=SETTINGS, DG_CONN = DGConnection, channel_name=chann)
+        shock_handlers.append(shock_handler)
+        for param in SETTINGS['dglab3'][config_chann_name]['avatar_params']:
+            logger.success(f"Channel {chann} 模式：{chann_mode} 增加监听：{param}")
+            dispatcher.map(param, shock_handler)
 
     th = Thread(target=async_main_wrapper, daemon=True)
     th.start()
