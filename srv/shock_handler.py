@@ -58,7 +58,7 @@ class ShockHandler():
 
     async def clear_check(self):
         # logger.info(f'Channel {self.channel} started clear check.')
-        sleep_time = 0.5
+        sleep_time = 0.05
         while 1:
             await asyncio.sleep(sleep_time)
             current_time = time.time()
@@ -89,12 +89,12 @@ class ShockHandler():
         to_   = int(100*to_)
         ret = ["{:02X}".format(freq)]*4
         delta = (to_ - from_) // 4
-        ret += ["{:02X}".format(max(from_ + delta*i, 0)) for i in range(1,5,1)]
+        ret += ["{:02X}".format(min(max(from_ + delta*i, 0),100)) for i in range(1,5,1)]
         ret = ''.join(ret)
         return json.dumps([ret],separators=(',', ':'))
 
     async def handler_distance(self, distance):
-        await self.set_clear_after(1)
+        await self.set_clear_after(0.5)
         strength = 0
         trigger_bottom = self.mode_config['trigger_range']['bottom']
         trigger_top = self.mode_config['trigger_range']['top']
