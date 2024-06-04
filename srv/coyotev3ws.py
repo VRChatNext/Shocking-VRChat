@@ -38,8 +38,8 @@ class DGConnection():
         self.SETTINGS = SETTINGS
         self.master_uuid = SETTINGS['ws']['master_uuid']
 
-        limit_a = SETTINGS['dglab3']['channel_a']['mode_config']['strength_limit']
-        limit_b = SETTINGS['dglab3']['channel_b']['mode_config']['strength_limit']
+        limit_a = SETTINGS['dglab3']['channel_a']['strength_limit']
+        limit_b = SETTINGS['dglab3']['channel_b']['strength_limit']
 
         self.strength       = {'A':0, 'B':0}
         self.strength_max   = {'A':0, 'B':0}

@@ -6,8 +6,8 @@
 
 1. 前往 [本项目Release](https://github.com/VRChatNext/Shocking-VRChat/releases) 下载最新版本的 Shocking-VRChat 工具
 2. 首次运行 exe 程序，将会在当前目录生成设置文件并退出。
-3. 在配置文件中填入 `avatar_params` 。
-4. （可选）按照需要修改 `settings-v*.*.yaml` 设置文件的内容，参数含义请查看配置文件参考。默认配置下，通道A为距离模式、通道B为电击模式。
+3. 在配置文件 `settings-v*.*.yaml` 中填入 `avatar_params` 与工作模式（shock/distance）。
+4. （可选）按需修改进阶配置文件 `settings-advanced-v*.*.yaml` 内容，参数含义请查看进阶配置文件参考。默认配置下，通道A为距离模式、通道B为电击模式。
 4. 重新运行本程序，请确认是否弹出了 Windows 防火墙安全警告，如弹出请选择允许，以接受郊狼 APP 被控连接。
 5. 启动 DG-LAB 3.0 APP，使用 Socket 控制功能扫描弹出窗口的二维码。
 6. 享受 VRChat！
@@ -41,20 +41,33 @@
     - 建议 bottom 设置为 0 或较小数字
     - 建议 top 设置为 1.0 以获得最大动态范围
 
-## 配置文件参考
+## 基础配置文件参考
 
-配置文件格式 `yaml`， 当前配置文件版本: `v0.1` 。
+配置文件格式 `yaml`， 当前配置文件版本: `v0.2` 。
+
+```yaml
+dglab3:
+  channel_a:
+    avatar_params:  
+    # 此处填写 OSC 监听参数组，可以使用通配符 * 匹配任意字符串，注意保留正确缩进与前缀的 “- ” 
+    # 可参考 https://python-osc.readthedocs.io/en/latest/dispatcher.html#mapping 
+    - /avatar/parameters/pcs/sps/something
+    - /avatar/parameters/Shock/wildcard/*
+    mode: distance # 工作模式，此处为距离模式
+  channel_b:
+    avatar_params:
+    - /avatar/parameters/VF87_humi/nsfw/contact/some_touch
+    - /avatar/parameters/ShockB2/some/param
+    mode: shock # 工作模式，此处为电击模式
+version: v0.2
+```
+
+## 进阶配置文件参考
 
 ```yaml
 SERVER_IP: null # 为 null 时程序将尝试自动获取本机 IP，如果获取错误，请将null修改为正确的 IP 地址（手机可以访问到电脑的 IP ，通常为有线网络或 WiFi ）
 dglab3:
   channel_a: # 通道 A 配置
-    avatar_params:  
-    # 此处填写 OSC 监听参数组，可以使用通配符 * 匹配任意字符串，注意保留正确缩进与前缀的 “- ” 
-    # 可参考 https://python-osc.readthedocs.io/en/latest/dispatcher.html#mapping 
-    - /avatar/parameters/pcs/sps/pussy
-    - /avatar/parameters/Shock/wildcard/*
-    mode: distance # 工作模式，此处为距离模式
     mode_config:   # 工作模式配置
       distance:
       # 该项目下的参数仅对 distance 距离模式生效
@@ -73,10 +86,6 @@ dglab3:
         bottom: 0.0 # OSC 回报参数触发下界（低于视为 0%）
         top: 0.8    # OSC 回报参数触发上界（超过视为 100%）
   channel_b: # 通道 B 配置，参数设置与 A 通道相同
-    avatar_params:
-    - /avatar/parameters/VF87_humi/nsfw/contact/dict_touch
-    - /avatar/parameters/ShockB2/some/param
-    mode: shock
     mode_config:
       distance:
         freq_ms: 10
@@ -96,7 +105,7 @@ log_level: INFO # 日志等级，诊断问题时可以改为 DEBUG
 osc: # OSC 服务配置
   listen_host: 127.0.0.1 # 如果 VRChat 在其他主机运行，请改为 0.0.0.0，并给 VRChat 正确配置 osc 启动命令行参数。
   listen_port: 9001
-version: v0.1 # 配置文件版本
+version: v0.2 # 配置文件版本
 web_server: # Web 服务器配置
   listen_host: 127.0.0.1 # 如果需要从其他主机打开网页扫码，请改为 0.0.0.0
   listen_port: 8800
@@ -112,7 +121,7 @@ ws: # Websocket 服务配置
 ### APP 扫码无法连接/连接超时
 
 1. 请检查二维码网页上显示的IP地址，例如 ws://192.168.1.2:28846/ ，该IP是否为你的网卡IP。
-2. 如果IP错误，请在配置文件中 `SERVER_IP:` 填写正确的 IP 地址后重启程序再试。
+2. 如果IP错误，请在进阶配置文件中 `SERVER_IP:` 填写正确的 IP 地址后重启程序再试。
 3. 请确认 Windows 防火墙是否允许本程序访问网络（接受传入连接）。
 4. 请检查手机到电脑的网络连通性。
 

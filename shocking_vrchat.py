@@ -15,31 +15,18 @@ from pythonosc.dispatcher import Dispatcher
 
 app = Flask(__name__)
 
-CONFIG_FILE_VERSION  = 'v0.1'
-CONFIG_FILENAME = f'settings-{CONFIG_FILE_VERSION}.yaml'
-SETTINGS = {
-    'SERVER_IP': None,
-    'dglab3': {
+CONFIG_FILE_VERSION  = 'v0.2'
+CONFIG_FILENAME = f'settings-advanced-{CONFIG_FILE_VERSION}.yaml'
+CONFIG_FILENAME_BASIC = f'settings-{CONFIG_FILE_VERSION}.yaml'
+SETTINGS_BASIC = {
+    'dglab3':{
         'channel_a': {
             'avatar_params': [
                 '/avatar/parameters/pcs/sps/pussy',
                 '/avatar/parameters/Shock/wildcard/*',
             ],
             'mode': 'distance',
-            'mode_config':{
-                'shock': {
-                    'duration': 2,
-                    'wave': '["0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464"]',
-                },
-                'distance': {
-                    'freq_ms': 10,
-                },
-                'strength_limit': 100,
-                'trigger_range': {
-                    'bottom': 0.0,
-                    'top': 1.0,
-                },
-            }
+            'strength_limit': 100,
         },
         'channel_b': {
             'avatar_params': [
@@ -47,6 +34,15 @@ SETTINGS = {
                 '/avatar/parameters/ShockB2/some/param',
             ],
             'mode': 'shock',
+            'strength_limit': 100,
+        }
+    },
+    'version': CONFIG_FILE_VERSION,
+}
+SETTINGS = {
+    'SERVER_IP': None,
+    'dglab3': {
+        'channel_a': {
             'mode_config':{
                 'shock': {
                     'duration': 2,
@@ -55,9 +51,23 @@ SETTINGS = {
                 'distance': {
                     'freq_ms': 10,
                 },
-                'strength_limit': 100,
                 'trigger_range': {
-                    'bottom': 0.1,
+                    'bottom': 0.0,
+                    'top': 1.0,
+                },
+            }
+        },
+        'channel_b': {
+            'mode_config':{
+                'shock': {
+                    'duration': 2,
+                    'wave': '["0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464"]',
+                },
+                'distance': {
+                    'freq_ms': 10,
+                },
+                'trigger_range': {
+                    'bottom': 0.0,
                     'top': 1.0,
                 },
             }
@@ -134,25 +144,36 @@ def async_main_wrapper():
 def config_save():
     with open(CONFIG_FILENAME, 'w', encoding='utf-8') as fw:
         yaml.safe_dump(SETTINGS, fw, allow_unicode=True)
+    with open(CONFIG_FILENAME_BASIC, 'w', encoding='utf-8') as fw:
+        yaml.safe_dump(SETTINGS_BASIC, fw, allow_unicode=True)
 
 class ConfigFileInited(Exception):
     pass
 
 def config_init():
-    logger.info(f'Init settings..., Config filename: {CONFIG_FILENAME}, Config version: {CONFIG_FILE_VERSION}.')
+    logger.info(f'Init settings..., Config filename: {CONFIG_FILENAME_BASIC} {CONFIG_FILENAME}, Config version: {CONFIG_FILE_VERSION}.')
     global SETTINGS, SERVER_IP
-    if not os.path.exists(CONFIG_FILENAME):
+    if not (os.path.exists(CONFIG_FILENAME) and os.path.exists(CONFIG_FILENAME_BASIC)):
         SETTINGS['ws']['master_uuid'] = str(uuid.uuid4())
         config_save()
         raise ConfigFileInited()
+
     with open(CONFIG_FILENAME, 'r', encoding='utf-8') as fr:
         SETTINGS = yaml.safe_load(fr)
-    if SETTINGS.get('version', None) != CONFIG_FILE_VERSION:
-        raise Exception(f'配置文件版本不匹配！请删除 {CONFIG_FILENAME} 文件后再次运行程序，以生成最新版本的配置文件。')
+    with open(CONFIG_FILENAME_BASIC, 'r', encoding='utf-8') as fr:
+        SETTINGS_BASIC = yaml.safe_load(fr)
+
+    if SETTINGS.get('version', None) != CONFIG_FILE_VERSION or SETTINGS_BASIC.get('version', None) != CONFIG_FILE_VERSION:
+        raise Exception(f'配置文件版本不匹配！请删除 {CONFIG_FILENAME_BASIC} {CONFIG_FILENAME} 文件后再次运行程序，以生成最新版本的配置文件。')
     if SETTINGS['ws']['master_uuid'] is None:
         SETTINGS['ws']['master_uuid'] = str(uuid.uuid4())
         config_save()
     SERVER_IP = SETTINGS['SERVER_IP'] or get_current_ip()
+
+    for chann in ['channel_a', 'channel_b']:
+        SETTINGS['dglab3'][chann]['mode'] = SETTINGS_BASIC['dglab3'][chann]['mode']
+        SETTINGS['dglab3'][chann]['strength_limit'] = SETTINGS_BASIC['dglab3'][chann]['strength_limit']
+
     logger.remove()
     logger.add(sys.stderr, level=SETTINGS['log_level'])
     logger.success("配置文件初始化完成，Websocket服务需要监听外来连接，如弹出防火墙提示，请点击允许访问。")
@@ -164,9 +185,9 @@ def main():
 
     global dispatcher
     dispatcher = Dispatcher()
-    for param in SETTINGS['dglab3']['channel_a']['avatar_params']:
+    for param in SETTINGS_BASIC['dglab3']['channel_a']['avatar_params']:
         dispatcher.map(param, shock_handler_A.osc_handler)
-    for param in SETTINGS['dglab3']['channel_b']['avatar_params']:
+    for param in SETTINGS_BASIC['dglab3']['channel_b']['avatar_params']:
         dispatcher.map(param, shock_handler_B.osc_handler)
 
     th = Thread(target=async_main_wrapper, daemon=True)
