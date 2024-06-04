@@ -89,7 +89,6 @@ class ShockHandler():
         to_   = int(100*to_)
         ret = ["{:02X}".format(freq)]*4
         delta = (to_ - from_) // 4
-        print(from_,to_,delta)
         ret += ["{:02X}".format(max(from_ + delta*i, 0)) for i in range(1,5,1)]
         ret = ''.join(ret)
         return json.dumps([ret],separators=(',', ':'))

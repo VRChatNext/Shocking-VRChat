@@ -54,11 +54,13 @@ dglab3:
     - /avatar/parameters/pcs/sps/something
     - /avatar/parameters/Shock/wildcard/*
     mode: distance # 工作模式，此处为距离模式
+    strength_limit: 100 # 强度限制，程序将取该强度与主机设置的强度中最大的一个
   channel_b:
     avatar_params:
     - /avatar/parameters/VF87_humi/nsfw/contact/some_touch
     - /avatar/parameters/ShockB2/some/param
     mode: shock # 工作模式，此处为电击模式
+    strength_limit: 100
 version: v0.2
 ```
 
@@ -80,7 +82,6 @@ dglab3:
         # 触发后的电击时长
         wave: '["0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464"]'
         # 电击波形
-      strength_limit: 100 # 强度限制，程序将取该强度与主机设置的强度中最大的一个
       trigger_range:
       # 触发阈值设置，对所有模式生效，范围 0 ~ 1
         bottom: 0.0 # OSC 回报参数触发下界（低于视为 0%）
@@ -92,7 +93,6 @@ dglab3:
       shock:
         duration: 2
         wave: '["0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464","0A0A0A0A64646464"]'
-      strength_limit: 100
       trigger_range:
         bottom: 0.1
         top: 0.8
