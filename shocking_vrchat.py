@@ -23,7 +23,7 @@ SETTINGS_BASIC = {
     'dglab3':{
         'channel_a': {
             'avatar_params': [
-                '/avatar/parameters/pcs/sps/pussy',
+                '/avatar/parameters/pcs/contact/enterPass',
                 '/avatar/parameters/Shock/wildcard/*',
             ],
             'mode': 'distance',
@@ -31,10 +31,10 @@ SETTINGS_BASIC = {
         },
         'channel_b': {
             'avatar_params': [
-                '/avatar/parameters/VF87_humi/nsfw/contact/dick_touch',
-                '/avatar/parameters/ShockB2/some/param',
+                '/avatar/parameters/lms-penis-proximityA*',
+                '/avatar/parameters/Shock/TouchAreaB',
             ],
-            'mode': 'shock',
+            'mode': 'distance',
             'strength_limit': 100,
         }
     },
