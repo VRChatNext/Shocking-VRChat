@@ -7,6 +7,8 @@ A small tool that uses WebSocket protocol to link Coyote DG-LAB 3.0 with VRChat 
 > [!CAUTION]
 > You must read and agree to the [Safety Precautions](doc/dglab/SafetyPrecautions.md) before using this tool!
 
+Our VRChat Group: [ShockingVRC https://vrc.group/SHOCK.2911](https://vrc.group/SHOCK.2911)
+
 ## Usage
 
 1. Go to [Project Release](https://github.com/VRChatNext/Shocking-VRChat/releases) to download the latest version of the Shocking-VRChat tool.

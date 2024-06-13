@@ -4,6 +4,8 @@
 
 一个小工具，通过接受 VRChat Avatar 的 OSC 消息，使用 Websocket 协议联动郊狼 DG-LAB 3.0 ，达到游戏中Avatar被别人/自己触摸，就会被郊狼电的效果。
 
+我们的 VRChat 群组： [ShockingVRC https://vrc.group/SHOCK.2911](https://vrc.group/SHOCK.2911)
+
 > [!CAUTION]
 > 您必须阅读并同意 [安全须知](doc/dglab/安全须知.md) ([Safety Precautions](doc/dglab/SafetyPrecautions.md) in English) 后才可以使用本工具！
 
