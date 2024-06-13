@@ -15,7 +15,6 @@
 5. 启动 DG-LAB 3.0 APP，使用 Socket 控制功能扫描弹出窗口的二维码。
 6. 享受 VRChat！
 
-
 ## 模型参数配置
 
 - 程序内部流转处理的参数为 0 ~ 1 之间的 float
@@ -26,14 +25,6 @@
 
 ## 工作模式解释
 
-### shock 电击模式
-
-- 触发后电击固定时长（默认：2秒）
-- 如果一直被触碰，会电击到触摸离开后的固定时长
-- 电击模式下 trigger_range 的含义
-    - 当接收到的 OSC 数据大于 bottom 时，触发电击
-    - top 参数在 shock 模式被忽略
-
 ### distance 距离模式
 
 - 根据与触发区域中心的距离控制波形强度
@@ -43,6 +34,15 @@
     - 当数据达到或超过 top 参数后，以最大强度输出
     - 建议 bottom 设置为 0 或较小数字
     - 建议 top 设置为 1.0 以获得最大动态范围
+
+### shock 电击模式
+
+- 触发后电击固定时长（默认：2秒）
+- 如果一直被触碰，会电击到触摸离开后的固定时长
+- 电击模式下 trigger_range 的含义
+    - 当接收到的 OSC 数据大于 bottom 时，触发电击
+    - top 参数在 shock 模式被忽略
+
 
 ## 基础配置文件参考
 
@@ -66,6 +66,34 @@ dglab3:
     strength_limit: 100
 version: v0.2
 ```
+
+## 常见参数
+
+> 本部分请协助补充描述与解释。
+
+- float
+  - /avatar/parameters/pcs/contact/enterPass
+    - 最常用，位于pcs触发入口处，可自动切换跟随被触发的位置
+  - /avatar/parameters/pcs/contact/proximityA
+  - /avatar/parameters/pcs/contact/proximityB
+  - /avatar/parameters/pcs/contact/slide
+  - /avatar/parameters/pcs/smash-intensity
+  - /avatar/parameters/pcs/sps/pussy
+    - 如果需要仅通过指定位置触发，可尝试 pcs/sps 下的参数，不会跟随auto mode位置变化
+  - /avatar/parameters/pcs/sps/ass
+  - /avatar/parameters/pcs/sps/boobs
+  - /avatar/parameters/pcs/sps/mouth
+  - /avatar/parameters/pcs/sps/penis*
+  - /avatar/parameters/lms-penis-proximityA*
+    - 通过 LMS 触发可以使用的参数
+- bool
+  - /avatar/parameters/pcs/smash-intense
+  - /avatar/parameters/pcs/contact/in
+  - /avatar/parameters/pcs/contact/out
+  - /avatar/parameters/pcs/contact/hit
+  - /avatar/parameters/lms-stroke-in
+  - /avatar/parameters/lms-stroke-out*
+  - /avatar/parameters/lms-stroke-smash
 
 ## 进阶配置文件参考
 
@@ -121,12 +149,44 @@ ws: # Websocket 服务配置
 
 ## FAQ
 
+### 是否有逃生通道
+
+- 有，可以按一下郊狼的任意一侧肩键按钮，此时 A B 通道强度会被设置为 0。
+- 当程序检测到通道强度被用户主动设置为 0 后，将不再自动跟随强度上限。
+- 还原需要手动在手机上点击 "+" 键，将通道强度 +1 ，即恢复自动跟随。
+
+### 应该如何设置上限
+
+- 建议通过郊狼 APP 内的被控设置进行调整，程序将跟随。
+- `settings-v*.*.yaml` 基础配置文件内的 `strength_limit` 也会限制强度上限，如果超过默认值 100，需要调整该参数。
+- 为保证强度自动跟随自动运行，请确认郊狼APP内 菜单-被控设置 中，两个通道的强度上限初始值（最小值）大于等于 1。
+
+### 想用一个参数同时触发两个通道
+
+- 请将需要使用的参数，例如 `/avatar/parameters/pcs/contact/enterPass` 同时复制进基础配置文件 `settings-v*.*.yaml` 内 `channel_a` 和 `channel_b` 的 `avatar_params` 列表内，请注意缩进与行首的 `-` 。
+
+### 控制台内有波形输出，但是没有强度或强度显著变小
+
+- 试试看按一下按钮将郊狼强度设置为 0 之后，再手动点击屏幕 +1 恢复正常模式。
+
+### 程序看起来收不到 OSC 数据
+
+1. **如果你有面捕**，请检查 Steam 中 VRChat 的启动命令行参数，是否有类似 `--osc=9000:127.0.0.1:9001` 的配置，如有，请修改进阶配置文件，`osc` `listen_port` 的值为最后一个冒号后的值，如 9001。
+2. Action Menu 中选择 Options > OSC > Reset Config 重置 OSC 配置
+3. 如果之前是正常使用的，但忽然收不到，重启电脑可以解决问题，似乎是 VRChat 的 Bug。
+
+### 为什么强度一直是最大可用值
+
+- 程序运行后会自动跟随郊狼APP内设置的上限并与基础配置文件内 `strength_limit` 取一最小值设置为最大强度。
+- 程序使用波形信号控制强度，即便您看到的强度达到了上限，但实际被触发的强度是由触发实体（例如他人的手）距离触发区域（例如 enterPass）中心点的距离决定，线性提升。
+- 如需修改判定上下界请用 `trigger_range` 配置。
+
 ### APP 扫码无法连接/连接超时
 
-1. 请检查二维码网页上显示的IP地址，例如 ws://192.168.1.2:28846/ ，该IP是否为你的网卡IP。
-2. 如果IP错误，请在进阶配置文件中 `SERVER_IP:` 填写正确的 IP 地址后重启程序再试。
-3. 请确认 Windows 防火墙是否允许本程序访问网络（接受传入连接）。
-4. 请检查手机到电脑的网络连通性。
+1. 请确认手机和电脑在同一个网络内，例如手机不可以使用流量。
+2. 请检查二维码网页上显示的IP地址，例如 ws://192.168.1.2:28846/ ，该IP是否为你的网卡IP。
+3. 如果IP错误，请在进阶配置文件中 `SERVER_IP:` 填写正确的 IP 地址后重启程序再试。
+4. 请确认 Windows 防火墙是否允许本程序访问网络（接受传入连接）。
 
 ### 程序版本更新后配置文件如何继承？
 
