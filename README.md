@@ -1,5 +1,7 @@
 # Shocking VRChat
 
+[English version](README_en.md)
+
 一个小工具，通过接受 VRChat Avatar 的 OSC 消息，使用 Websocket 协议联动郊狼 DG-LAB 3.0 ，达到游戏中Avatar被别人/自己触摸，就会被郊狼电的效果。
 
 > [!CAUTION]
@@ -14,14 +16,6 @@
 4. 重新运行本程序，请确认是否弹出了 Windows 防火墙安全警告，如弹出请选择允许，以接受郊狼 APP 被控连接。
 5. 启动 DG-LAB 3.0 APP，使用 Socket 控制功能扫描弹出窗口的二维码。
 6. 享受 VRChat！
-
-## 模型参数配置
-
-- 程序内部流转处理的参数为 0 ~ 1 之间的 float
-- 支持输入的参数类型为 float、int、bool
-    - float，int ：小于 0 会被视为 0，大于 1 会被视为 1
-    - bool ：True 为 1，False 为 0
-- 其他参数类型会报错
 
 ## 工作模式解释
 
@@ -66,6 +60,14 @@ dglab3:
     strength_limit: 100
 version: v0.2
 ```
+
+## 模型参数配置
+
+- 程序内部流转处理的参数为 0 ~ 1 之间的 float
+- 支持输入的参数类型为 float、int、bool
+    - float，int ：小于 0 会被视为 0，大于 1 会被视为 1
+    - bool ：True 为 1，False 为 0
+- 其他参数类型会报错
 
 ## 常见参数
 
