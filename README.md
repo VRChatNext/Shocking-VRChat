@@ -81,6 +81,7 @@ version: v0.2
   - /avatar/parameters/pcs/contact/proximityA
   - /avatar/parameters/pcs/contact/proximityB
   - /avatar/parameters/pcs/contact/slide
+    - 不推荐使用，pcs开启后前后移动会触发很多次
   - /avatar/parameters/pcs/smash-intensity
   - /avatar/parameters/pcs/sps/pussy
     - 如果需要仅通过指定位置触发，可尝试 pcs/sps 下的参数，不会跟随auto mode位置变化
@@ -169,8 +170,41 @@ ws: # Websocket 服务配置
 
 - 请将需要使用的参数，例如 `/avatar/parameters/pcs/contact/enterPass` 同时复制进基础配置文件 `settings-v*.*.yaml` 内 `channel_a` 和 `channel_b` 的 `avatar_params` 列表内，请注意缩进与行首的 `-` 。
 
+### OSC 端口冲突了怎么办
+
+报错中显示 `OSC监听失败` 或包含 `create_datagram_endpoint` 的 `WinError 10048` 为该问题。该问题一般是和面捕软件冲突导致。
+
+```
+Exception in thread Thread-1 (async_main_wrapper):
+Traceback (most recent call last):
+  ...
+  File "shocking_vrchat.py", line 143, in async_main_wrapper
+  ...
+  File "shocking_vrchat.py", line 135, in async_main
+  File "asyncio\base_events.py", line 1387, in create_datagram_endpoint
+  File "asyncio\base_events.py", line 1371, in create_datagram_endpoint
+OSError: [WinError 10048] 通常每个套接字地址(协议/网络地址/端口)只允许使用一次。
+```
+1. 请前往 [osc-repeater](https://github.com/CyCoreSystems/osc-repeater) 从 Release 下载 osc-repeater
+2. 解压后在 `osc-repeater_x.x.x_windows_amd64.exe` 同目录创建配置文件，名为 `config.yaml`，文件内容：
+```
+listenPorts:
+  - 9001
+targets:
+  - "127.0.0.1:9011"
+  - "127.0.0.1:9021"
+```
+3. （可选）如果你的 VRChat 存在特殊OSC设置，请按照需要修改 `9001` 为实际端口号
+4. 在面捕软件中修改 OSC Receiver 端口号为 `9011`，保存后退出面捕软件
+5. 修改 ShockingVRChat 的 `settings-advanced-v*.*.yaml` 进阶配置，设置 `osc` 的 `listen_port` 为 `9021`
+6. **请确认已经退出**面捕程序和ShockingVRChat（本软件）
+7. 依次双击运行 `osc-repeater`、面捕程序、ShockingVRChat
+
+*以后使用时只执行步骤 7 即可，如果只用面捕也需要启动 `osc-repeater`
+
 ### 控制台内有波形输出，但是没有强度或强度显著变小
 
+- 确认贴片正常连接，确认电线正常连接
 - 试试看按一下按钮将郊狼强度设置为 0 之后，再手动点击屏幕 +1 恢复正常模式。
 
 ### 程序看起来收不到 OSC 数据
@@ -204,6 +238,8 @@ ws: # Websocket 服务配置
 ## Credits
 
 感谢 [DG-LAB-OPENSOURCE](https://github.com/DG-LAB-OPENSOURCE/DG-LAB-OPENSOURCE) ，赞美 DG-LAB 的开源精神！
+
+感谢以下用户对常见参数部分的协助：ichiAkagi
 
 -----
 

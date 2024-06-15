@@ -3,6 +3,8 @@ import asyncio
 import yaml, uuid, os, sys, traceback, time, socket
 from threading import Thread
 from loguru import logger
+import traceback
+import copy
 
 from flask import Flask, render_template, redirect
 from websockets.server import serve as wsserve
@@ -24,6 +26,8 @@ SETTINGS_BASIC = {
         'channel_a': {
             'avatar_params': [
                 '/avatar/parameters/pcs/contact/enterPass',
+                '/avatar/parameters/Shock/TouchAreaA',
+                '/avatar/parameters/Shock/TouchAreaC',
                 '/avatar/parameters/Shock/wildcard/*',
             ],
             'mode': 'distance',
@@ -33,6 +37,7 @@ SETTINGS_BASIC = {
             'avatar_params': [
                 '/avatar/parameters/lms-penis-proximityA*',
                 '/avatar/parameters/Shock/TouchAreaB',
+                '/avatar/parameters/Shock/TouchAreaC',
             ],
             'mode': 'distance',
             'strength_limit': 100,
@@ -124,6 +129,34 @@ async def sendwav():
     await DGConnection.broadcast_wave(channel='A', wavestr=srv.waveData[0])
     return 'OK'
 
+def strip_basic_settings(settings: dict):
+    ret = copy.deepcopy(settings)
+    for chann in ['channel_a', 'channel_b']:
+        del ret['dglab3'][chann]['avatar_params']
+        del ret['dglab3'][chann]['mode'] 
+        del ret['dglab3'][chann]['strength_limit'] 
+    return ret
+
+@app.route('/api/v1/config', methods=['GET', 'HEAD', 'OPTIONS'])
+def get_config():
+    return {
+        'basic': SETTINGS_BASIC,
+        'advanced': strip_basic_settings(SETTINGS),
+    }
+
+@app.route('/api/v1/config', methods=['POST'])
+def update_config():
+    # TODO: Hot apply settings
+    err = {
+        'success': False,
+        'message': "Some error",
+    }
+    return {
+        'success': True,
+        'need_restart': False,
+        'message': "Some Message, like, Please restart."
+    }
+
 async def wshandler(connection):
     client = DGConnection(connection, SETTINGS=SETTINGS)
     await client.serve()
@@ -131,11 +164,24 @@ async def wshandler(connection):
 async def async_main():
     for shock_handler in shock_handlers:
         shock_handler.start_background_jobs()
-    server = AsyncIOOSCUDPServer((SETTINGS["osc"]["listen_host"], SETTINGS["osc"]["listen_port"]), dispatcher, asyncio.get_event_loop())
-    transport, protocol = await server.create_serve_endpoint()
-    # await wsserve(wshandler, "127.0.0.1", 8765)
-    async with wsserve(wshandler, SETTINGS['ws']["listen_host"], SETTINGS['ws']["listen_port"]):
-        await asyncio.Future()  # run forever
+    try: 
+        server = AsyncIOOSCUDPServer((SETTINGS["osc"]["listen_host"], SETTINGS["osc"]["listen_port"]), dispatcher, asyncio.get_event_loop())
+        transport, protocol = await server.create_serve_endpoint()
+        # await wsserve(wshandler, "127.0.0.1", 8765)
+    except Exception as e:
+        logger.error(traceback.format_exc())
+        logger.error("OSC UDP Recevier listen failed.")
+        logger.error("OSC监听失败，可能存在端口冲突")
+        return
+    try: 
+        async with wsserve(wshandler, SETTINGS['ws']["listen_host"], SETTINGS['ws']["listen_port"]):
+            await asyncio.Future()  # run forever
+    except Exception as e:
+        logger.error(traceback.format_exc())
+        logger.error("Websocket server listen failed.")
+        logger.error("WS服务监听失败，可能存在端口冲突")
+        return
+
     transport.close()
 
 def async_main_wrapper():
@@ -165,6 +211,7 @@ def config_init():
         SETTINGS_BASIC = yaml.safe_load(fr)
 
     if SETTINGS.get('version', None) != CONFIG_FILE_VERSION or SETTINGS_BASIC.get('version', None) != CONFIG_FILE_VERSION:
+        logger.error(f"Configuration file version mismatch! Please delete the {CONFIG_FILENAME_BASIC} and {CONFIG_FILENAME} files and run the program again to generate the latest version of the configuration files.")
         raise Exception(f'配置文件版本不匹配！请删除 {CONFIG_FILENAME_BASIC} {CONFIG_FILENAME} 文件后再次运行程序，以生成最新版本的配置文件。')
     if SETTINGS['ws']['master_uuid'] is None:
         SETTINGS['ws']['master_uuid'] = str(uuid.uuid4())
@@ -178,6 +225,7 @@ def config_init():
 
     logger.remove()
     logger.add(sys.stderr, level=SETTINGS['log_level'])
+    logger.success("The configuration file initialization is complete. The WebSocket service needs to listen for incoming connections. If a firewall prompt appears, please click Allow Access.")
     logger.success("配置文件初始化完成，Websocket服务需要监听外来连接，如弹出防火墙提示，请点击允许访问。")
 
 def main():
@@ -191,7 +239,7 @@ def main():
         shock_handler = ShockHandler(SETTINGS=SETTINGS, DG_CONN = DGConnection, channel_name=chann)
         shock_handlers.append(shock_handler)
         for param in SETTINGS['dglab3'][config_chann_name]['avatar_params']:
-            logger.success(f"Channel {chann} 模式：{chann_mode} 增加监听：{param}")
+            logger.success(f"Channel {chann} Mode：{chann_mode} Listening：{param}")
             dispatcher.map(param, shock_handler.osc_handler)
 
     th = Thread(target=async_main_wrapper, daemon=True)
@@ -208,10 +256,15 @@ def main():
     app.run(SETTINGS['web_server']['listen_host'], SETTINGS['web_server']['listen_port'], debug=False)
 
 if __name__ == "__main__":
-        try:
-            config_init()
-            main()
-        except ConfigFileInited:
-            logger.success('配置文件初始化完成，请按需修改后重启程序。')
-        logger.info('退出等待60秒 ... 按Ctrl-C立即退出')
-        time.sleep(60)
+    try:
+        config_init()
+        main()
+    except ConfigFileInited:
+        logger.success('The configuration file initialization is complete. Please modify it as needed and restart the program.')
+        logger.success('配置文件初始化完成，请按需修改后重启程序。')
+    except Exception as e:
+        logger.error(traceback.format_exc())
+        logger.error("Unexpected Error.")
+    logger.info('Exiting in 60 seconds ... Press Ctrl-C to exit immediately')
+    logger.info('退出等待60秒 ... 按Ctrl-C立即退出')
+    time.sleep(60)
