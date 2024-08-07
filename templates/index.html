@@ -1,0 +1,220 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- 引入 Font Awesome CSS -->
+    <script src="/static/js/vue.js"></script>
+    <script src="/static/js/qr-creator.min.js"></script>
+    <script src="/static/components/form-field.js"></script>
+    <script src="https://unpkg.com/vue-i18n@8"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <title>...</title>
+</head>
+<body>
+<div id="app" class="main-container">
+    <header>
+        <div class="language-switcher">
+            <select id="languageSelect" v-model="selectedLanguage">
+                <option key="en" value="en">English</option>
+                <option key="cn" value="cn">中文</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="tabs">
+        <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = tab.name">[[ tab.name ]]</button>
+    </div>
+
+    <div class="tab" key="qrcode" v-show="activeTab === 'QRCODE'">
+        <textarea autofocus id="i">{{ content }}</textarea>
+        <div id="q" style="flex: 1" ></div>
+    </div>
+    <div class="tab" key="config" v-show="activeTab === 'CONFIG'">
+        <div class="container-top" id="list">
+            <label>[[i18n.t('configSwitch')]]: </label>
+            <select id="configSelect" v-model="selectedConfig">
+                <option v-for="propName in Object.keys(config)" :key="propName" :value="propName">[[ propName ]]</option>
+            </select>
+        </div>
+
+        <form @submit.prevent="submitConfig">
+            <div v-for="(item, key) in currentConfig" :key="key">
+                <form-field :id="key" :label="key" :value="item" @change="updateValue(config, key, $event)"></form-field>
+            </div>
+            <button type="submit">[[i18n.t('saveConfig')]]</button>
+        </form>
+
+        <pre>[[ config ]]</pre>
+    </div>
+</div>
+</body>
+<script>
+    const VueI18n = window.VueI18n;
+    let i18n = null
+    if (VueI18n) {
+        i18n = new VueI18n({
+            locale: 'en',
+            messages: {
+                en: {
+                    configSwitch: 'switch config',
+                    saveConfig: 'save config'
+                },
+                cn: {
+                    configSwitch: '切换配置',
+                    saveConfig: '保存配置'
+                }
+            }
+        });
+        Vue.use(i18n);
+    }
+
+    const app = new Vue({
+        el: '#app',
+        delimiters: ["[[", "]]"],
+        data: {
+            i18n,
+            config: {},
+            currentConfig: {},
+            selectedLanguage: 'en',
+            selectedConfig: 'basic',
+            activeTab: "QRCODE",
+            tabs: [
+                { name: 'QRCODE'},
+                { name: 'CONFIG'},
+            ]
+        },
+        watch: {
+            selectedLanguage(newVal) {
+                localStorage.setItem('language', newVal);
+                this.i18n.locale = newVal;
+            },
+            selectedConfig(newVal) {
+                this.currentConfig = this.config[newVal];
+            }
+        },
+        methods: {
+            submitConfig() {
+                console.log(this.config);
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", "api/v1/config", true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify(this.config));
+            },
+            updateValue(configObj, key, newValue) {
+                this.$set(configObj, key, newValue);
+            },
+            fetchData() {
+                fetch('api/v1/config')
+                    .then(response => response.json())
+                    .then(data => {
+                        this.config = data;
+                        this.currentConfig = this.config['basic']
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            },
+            drawQr(){
+                let M = 2950;
+                q = document.getElementById("q");
+                if(q.clientHeight ==0 || q.clientWidth == 0){
+                    setTimeout(this.drawQr, 100);
+                    return;
+                }
+                i = document.getElementById("i");
+                debugger;
+                u = (() => {
+                    if (s = Math.max(Math.min(q.clientWidth, q.clientHeight) - 10, 50), t = i.value, t.length > M)
+                        alert(`Text is ${t.length - M} bytes too long`);
+                    else try {
+                        q.innerHTML = "", QrCreator.render({text: t, radius: 0, ecLevel: "L", background: "#fff", size: s}, q)
+                    } catch (e) {
+                        alert("Failed to generate QR code")
+                    }
+                }), u(), i.oninput = u, window.onresize = u
+            }
+        },
+        mounted() {
+            if(localStorage.getItem('language')) {
+                this.selectedLanguage = localStorage.getItem('language');
+            }
+            this.drawQr();
+            this.fetchData();
+        }
+    });
+</script>
+<style>
+
+    .main-container{
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+    }
+    .tab{
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .nested {
+        margin-left: 20px;
+    }
+
+    label {
+        line-height: 35px;
+        margin-right: 5px;
+    }
+
+    .container-top {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .height-light {
+        border: 1px solid #37718f;
+    }
+
+    header {
+        position: relative;
+    }
+
+    .language-switcher {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .language-switcher select {
+        border: none;
+        cursor: pointer;
+    }
+
+    .language-switcher select:focus {
+        outline: none;
+    }
+
+    .form-field {
+        align-items: center;
+        margin-bottom: 10px; /* 可根据需要调整 */
+    }
+
+    .form-label {
+        flex: 0 0 auto;
+        margin-right: 10px; /* 可根据需要调整 */
+    }
+
+    .form-input {
+        flex: 1 1 auto;
+        padding-left: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 1rem; /* 可根据需要调整 */
+    }
+
+    .nested {
+        padding-left: 20px; /* 可根据需要调整 */
+    }
+    #q canvas {
+        margin: auto;
+        display: block;
+    }
+</style>
+</html>

@@ -6,7 +6,7 @@ from loguru import logger
 import traceback
 import copy
 
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 from websockets.server import serve as wsserve
 
 import srv
@@ -118,7 +118,7 @@ def web_index():
 
 @app.route("/qr")
 def web_qr():
-    return render_template('tiny-qr.html', content=f'https://www.dungeon-lab.com/app-download.php#DGLAB-SOCKET#ws://{SERVER_IP}:{SETTINGS["ws"]["listen_port"]}/{SETTINGS["ws"]["master_uuid"]}')
+    return render_template('index.html', content=f'https://www.dungeon-lab.com/app-download.php#DGLAB-SOCKET#ws://{SERVER_IP}:{SETTINGS["ws"]["listen_port"]}/{SETTINGS["ws"]["master_uuid"]}')
 
 @app.route('/conns')
 def get_conns():
