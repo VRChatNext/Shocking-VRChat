@@ -10,8 +10,9 @@ from flask import Flask, render_template, redirect
 from websockets.server import serve as wsserve
 
 import srv
-from srv.coyotev3ws import DGWSMessage, DGConnection
-from srv.shock_handler import ShockHandler
+from srv.connector.coyotev3ws import DGWSMessage, DGConnection
+from srv.handler.shock_handler import ShockHandler
+from srv.handler.machine_handler import TuyaHandler, TuYaConnection
 
 from pythonosc.osc_server import AsyncIOOSCUDPServer
 from pythonosc.dispatcher import Dispatcher
@@ -162,8 +163,8 @@ async def wshandler(connection):
     await client.serve()
 
 async def async_main():
-    for shock_handler in shock_handlers:
-        shock_handler.start_background_jobs()
+    for handler in handlers:
+        handler.start_background_jobs()
     try: 
         server = AsyncIOOSCUDPServer((SETTINGS["osc"]["listen_host"], SETTINGS["osc"]["listen_port"]), dispatcher, asyncio.get_event_loop())
         transport, protocol = await server.create_serve_endpoint()
@@ -229,18 +230,30 @@ def config_init():
     logger.success("配置文件初始化完成，Websocket服务需要监听外来连接，如弹出防火墙提示，请点击允许访问。")
 
 def main():
-    global dispatcher, shock_handlers
+    global dispatcher, handlers
     dispatcher = Dispatcher()
-    shock_handlers = []
+    handlers = []
 
     for chann in ['A', 'B']:
         config_chann_name = f'channel_{chann.lower()}'
         chann_mode = SETTINGS['dglab3'][config_chann_name]['mode']
         shock_handler = ShockHandler(SETTINGS=SETTINGS, DG_CONN = DGConnection, channel_name=chann)
-        shock_handlers.append(shock_handler)
+        handlers.append(shock_handler)
         for param in SETTINGS['dglab3'][config_chann_name]['avatar_params']:
             logger.success(f"Channel {chann} Mode：{chann_mode} Listening：{param}")
             dispatcher.map(param, shock_handler.osc_handler)
+    
+    TuyaConn = TuYaConnection(
+        access_id=SETTINGS['machine']['tuya']['access_id'],
+        access_key=SETTINGS['machine']['tuya']['access_key'],
+        device_ids=SETTINGS['machine']['tuya']['device_ids'],
+    )
+    machine_tuya_handler = TuyaHandler(SETTINGS=SETTINGS, DEV_CONN=TuyaConn)
+    handlers.append(machine_tuya_handler)
+    for param in SETTINGS['machine']['tuya']['avatar_params']:
+        logger.success(f"Machine Listening：{param}")
+        dispatcher.map(param, machine_tuya_handler.osc_handler)
+
 
     th = Thread(target=async_main_wrapper, daemon=True)
     th.start()
