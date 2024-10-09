@@ -1,6 +1,6 @@
 from typing import List
 import asyncio
-import yaml, uuid, os, sys, traceback, time, socket
+import yaml, uuid, os, sys, traceback, time, socket, re, json
 from threading import Thread
 from loguru import logger
 import traceback
@@ -10,8 +10,9 @@ from flask import Flask, render_template, redirect
 from websockets.server import serve as wsserve
 
 import srv
-from srv.coyotev3ws import DGWSMessage, DGConnection
-from srv.shock_handler import ShockHandler
+from srv.connector.coyotev3ws import DGWSMessage, DGConnection
+from srv.handler.shock_handler import ShockHandler
+from srv.handler.machine_handler import TuyaHandler, TuYaConnection
 
 from pythonosc.osc_server import AsyncIOOSCUDPServer
 from pythonosc.dispatcher import Dispatcher
@@ -35,6 +36,7 @@ SETTINGS_BASIC = {
         },
         'channel_b': {
             'avatar_params': [
+                '/avatar/parameters/pcs/contact/enterPass',
                 '/avatar/parameters/lms-penis-proximityA*',
                 '/avatar/parameters/Shock/TouchAreaB',
                 '/avatar/parameters/Shock/TouchAreaC',
@@ -129,6 +131,62 @@ async def sendwav():
     await DGConnection.broadcast_wave(channel='A', wavestr=srv.waveData[0])
     return 'OK'
 
+@app.route('/api/v1/shock/<channel>/<second>')
+async def api_v1_shock(channel, second):
+    if channel == 'all':
+        channels = ['A', 'B']
+    else:
+        channels = [channel]
+    try: 
+        second = float(second)
+    except Exception:
+        logger.warning('[API][shock] Invalid second, set to 1.')
+        second = 1.0
+    second = min(second, 10.0)
+    repeat = int(10 * second)
+    for _ in range(repeat // 10):
+        for chan in channels:
+            await api_v1_sendwave(chan, 10, '0A0A0A0A64646464')
+    if repeat % 10 > 0:
+        for chan in channels:
+            await api_v1_sendwave(chan, repeat % 10, '0A0A0A0A64646464')
+    return 'OK'
+
+@app.route('/api/v1/sendwave/<channel>/<repeat>/<wavedata>')
+async def api_v1_sendwave(channel, repeat, wavedata):
+    """API V1 Sendwave.
+
+    Keyword arguments:
+    channel -- A or B.
+    repeat -- repeat times, 1 for 100ms, 1 to 80. Max 80 for json length limit.
+    wavedata -- Coyote v3 wave format, eg. 0A0A0A0A64646464.
+    """
+    try:
+        channel = channel.upper()
+        if channel not in ['A', 'B']:
+            raise Exception
+    except:
+        logger.warning('[API][sendwave] Invalid Channel, set to A.')
+        channel = 'A'
+    try:
+        repeat = int(repeat)
+        if repeat > 100 or repeat < 1:
+            raise Exception
+    except:
+        logger.warning('[API][sendwave] Invalid repeat times, set to 10.')
+        repeat = 10
+    try:
+        if not re.match(r'^([0-9A-F]{16})$', wavedata):
+            raise Exception
+    except:
+        logger.warning('[API][sendwave] Invalid wave, set to 0A0A0A0A64646464.')
+        wavedata = '0A0A0A0A64646464'
+    wavestr = [wavedata for _ in range(repeat)]
+    wavestr = json.dumps(wavestr, separators=(',', ':'))
+    logger.success(f'[API][sendwave] C:{channel} R:{repeat} W:{wavedata}')
+    await DGConnection.broadcast_wave(channel=channel, wavestr=wavestr)
+    return 'OK'
+
 def strip_basic_settings(settings: dict):
     ret = copy.deepcopy(settings)
     for chann in ['channel_a', 'channel_b']:
@@ -162,8 +220,8 @@ async def wshandler(connection):
     await client.serve()
 
 async def async_main():
-    for shock_handler in shock_handlers:
-        shock_handler.start_background_jobs()
+    for handler in handlers:
+        handler.start_background_jobs()
     try: 
         server = AsyncIOOSCUDPServer((SETTINGS["osc"]["listen_host"], SETTINGS["osc"]["listen_port"]), dispatcher, asyncio.get_event_loop())
         transport, protocol = await server.create_serve_endpoint()
@@ -229,18 +287,31 @@ def config_init():
     logger.success("配置文件初始化完成，Websocket服务需要监听外来连接，如弹出防火墙提示，请点击允许访问。")
 
 def main():
-    global dispatcher, shock_handlers
+    global dispatcher, handlers
     dispatcher = Dispatcher()
-    shock_handlers = []
+    handlers = []
 
     for chann in ['A', 'B']:
         config_chann_name = f'channel_{chann.lower()}'
         chann_mode = SETTINGS['dglab3'][config_chann_name]['mode']
         shock_handler = ShockHandler(SETTINGS=SETTINGS, DG_CONN = DGConnection, channel_name=chann)
-        shock_handlers.append(shock_handler)
+        handlers.append(shock_handler)
         for param in SETTINGS['dglab3'][config_chann_name]['avatar_params']:
             logger.success(f"Channel {chann} Mode：{chann_mode} Listening：{param}")
             dispatcher.map(param, shock_handler.osc_handler)
+    
+    if 'machine' in SETTINGS and 'tuya' in SETTINGS['machine']:
+        TuyaConn = TuYaConnection(
+            access_id=SETTINGS['machine']['tuya']['access_id'],
+            access_key=SETTINGS['machine']['tuya']['access_key'],
+            device_ids=SETTINGS['machine']['tuya']['device_ids'],
+        )
+        machine_tuya_handler = TuyaHandler(SETTINGS=SETTINGS, DEV_CONN=TuyaConn)
+        handlers.append(machine_tuya_handler)
+        for param in SETTINGS['machine']['tuya']['avatar_params']:
+            logger.success(f"Machine Listening：{param}")
+            dispatcher.map(param, machine_tuya_handler.osc_handler)
+
 
     th = Thread(target=async_main_wrapper, daemon=True)
     th.start()

@@ -3,7 +3,7 @@ from loguru import logger
 import websockets
 from websockets.legacy.protocol import WebSocketCommonProtocol
 
-from . import WS_CONNECTIONS, DEFAULT_WAVE #, WS_CONNECTIONS_ID_REVERSE, WS_BINDS
+from srv import WS_CONNECTIONS, DEFAULT_WAVE #, WS_CONNECTIONS_ID_REVERSE, WS_BINDS
 
 class DGWSMessage():
     HEARTBEAT = json.dumps({'type': 'heartbeat', 'clientId': '', 'targetId': '', 'message': '200'})
