@@ -131,6 +131,16 @@ async def sendwav():
     await DGConnection.broadcast_wave(channel='A', wavestr=srv.waveData[0])
     return 'OK'
 
+@app.route('/api/v1/status')
+async def api_v1_status():
+    return {
+        'healthy': 'ok',
+        'devices': [
+            *[{"type": 'shock', 'device':'coyotev3', 'attr': {'strength':conn.strength, 'uuid':conn.uuid}} for conn in srv.WS_CONNECTIONS],
+            *[{"type": 'machine', 'device':'tuya', 'attr': {}} for conn in []], # TODO
+        ]
+    }
+
 @app.route('/api/v1/shock/<channel>/<second>')
 async def api_v1_shock(channel, second):
     if channel == 'all':
