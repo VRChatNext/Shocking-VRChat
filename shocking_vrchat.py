@@ -6,7 +6,7 @@ from loguru import logger
 import traceback
 import copy
 
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 from websockets.server import serve as wsserve
 
 import srv
@@ -131,6 +131,14 @@ async def sendwav():
     await DGConnection.broadcast_wave(channel='A', wavestr=srv.waveData[0])
     return 'OK'
 
+def ret_status_hook(func):
+    async def wrapper(*args, **kwargs):
+        ret = await func(*args, **kwargs)
+        if request.args.get('ret') == 'status':
+            ret = await api_v1_status()
+        return ret
+    return wrapper
+
 @app.route('/api/v1/status')
 async def api_v1_status():
     return {
@@ -141,7 +149,8 @@ async def api_v1_status():
         ]
     }
 
-@app.route('/api/v1/shock/<channel>/<second>')
+@app.route('/api/v1/shock/<channel>/<second>', endpoint='api_v1_shock')
+@ret_status_hook
 async def api_v1_shock(channel, second):
     if channel == 'all':
         channels = ['A', 'B']
@@ -162,7 +171,8 @@ async def api_v1_shock(channel, second):
             await api_v1_sendwave(chan, repeat % 10, '0A0A0A0A64646464')
     return 'OK'
 
-@app.route('/api/v1/sendwave/<channel>/<repeat>/<wavedata>')
+@app.route('/api/v1/sendwave/<channel>/<repeat>/<wavedata>', endpoint='api_v1_sendwave')
+@ret_status_hook
 async def api_v1_sendwave(channel, repeat, wavedata):
     """API V1 Sendwave.
 
