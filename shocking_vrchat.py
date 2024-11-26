@@ -6,7 +6,7 @@ from loguru import logger
 import traceback
 import copy
 
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, jsonify
 from websockets.server import serve as wsserve
 
 import srv
@@ -131,12 +131,40 @@ async def sendwav():
     await DGConnection.broadcast_wave(channel='A', wavestr=srv.waveData[0])
     return 'OK'
 
-def ret_status_hook(func):
+@app.after_request
+async def after_request_hook(response):
+    if request.args.get('ret') == 'status' and response.status_code == 200:
+        response = jsonify(await api_v1_status())
+    return response
+
+class ClientNotAllowed(Exception):
+    pass
+
+@app.errorhandler(ClientNotAllowed)
+def hendle_ClientNotAllowed(e):
+    return {
+        "error": "Client not allowed."
+    }, 401
+
+@app.errorhandler(Exception)
+def handle_Exception(e):
+    return {
+        "error": str(e)
+    } , 500
+
+# Disallow (Video)
+# User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.72 Safari/537.36\r\n
+# User-Agent: NSPlayer/12.00.26100.2314 WMFSDK/12.00.26100.2314\r\n
+# Allow (Text/Image)
+# User-Agent: UnityPlayer/2022.3.22f1-DWR (UnityWebRequest/1.0, libcurl/8.5.0-DEV)\r\n
+def allow_vrchat_only(func):
     async def wrapper(*args, **kwargs):
-        ret = await func(*args, **kwargs)
-        if request.args.get('ret') == 'status':
-            ret = await api_v1_status()
-        return ret
+        ua = request.headers.get('User-Agent')
+        if 'UnityPlayer' not in ua:
+            raise ClientNotAllowed
+        if 'NSPlayer' in ua or 'WMFSDK' in ua:
+            raise ClientNotAllowed
+        return await func(*args, **kwargs)
     return wrapper
 
 @app.route('/api/v1/status')
@@ -150,7 +178,7 @@ async def api_v1_status():
     }
 
 @app.route('/api/v1/shock/<channel>/<second>', endpoint='api_v1_shock')
-@ret_status_hook
+@allow_vrchat_only
 async def api_v1_shock(channel, second):
     if channel == 'all':
         channels = ['A', 'B']
@@ -169,10 +197,10 @@ async def api_v1_shock(channel, second):
     if repeat % 10 > 0:
         for chan in channels:
             await api_v1_sendwave(chan, repeat % 10, '0A0A0A0A64646464')
-    return 'OK'
+    return {'result': 'OK'}
 
 @app.route('/api/v1/sendwave/<channel>/<repeat>/<wavedata>', endpoint='api_v1_sendwave')
-@ret_status_hook
+@allow_vrchat_only
 async def api_v1_sendwave(channel, repeat, wavedata):
     """API V1 Sendwave.
 
@@ -205,7 +233,7 @@ async def api_v1_sendwave(channel, repeat, wavedata):
     wavestr = json.dumps(wavestr, separators=(',', ':'))
     logger.success(f'[API][sendwave] C:{channel} R:{repeat} W:{wavedata}')
     await DGConnection.broadcast_wave(channel=channel, wavestr=wavestr)
-    return 'OK'
+    return {'result': 'OK'}
 
 def strip_basic_settings(settings: dict):
     ret = copy.deepcopy(settings)
@@ -356,6 +384,6 @@ if __name__ == "__main__":
     except Exception as e:
         logger.error(traceback.format_exc())
         logger.error("Unexpected Error.")
-    logger.info('Exiting in 60 seconds ... Press Ctrl-C to exit immediately')
-    logger.info('退出等待60秒 ... 按Ctrl-C立即退出')
-    time.sleep(60)
+    logger.info('Exiting in 1 seconds ... Press Ctrl-C to exit immediately')
+    logger.info('退出等待1秒 ... 按Ctrl-C立即退出')
+    time.sleep(1)
