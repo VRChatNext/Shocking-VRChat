@@ -63,6 +63,28 @@ SETTINGS = {
                     'bottom': 0.0,
                     'top': 1.0,
                 },
+                'touch': {
+                    'freq_ms': 10,
+                    'n_derivative': 1, # 0 for distance, 1 for velocity, 2 for acceleration, 3 for jerk
+                    'derivative_params': [
+                        {
+                            "top": 1,
+                            "bottom": 0,
+                        },
+                        {
+                            "top": 5,
+                            "bottom": 0,
+                        },
+                        {
+                            "top": 50,
+                            "bottom": 0,
+                        },
+                        {
+                            "top": 500,
+                            "bottom": 0,
+                        },
+                    ]
+                },
             }
         },
         'channel_b': {
@@ -77,6 +99,28 @@ SETTINGS = {
                 'trigger_range': {
                     'bottom': 0.0,
                     'top': 1.0,
+                },
+                'touch': {
+                    'freq_ms': 10,
+                    'n_derivative': 1,
+                    'derivative_params': [
+                        {
+                            "top": 1,
+                            "bottom": 0,
+                        },
+                        {
+                            "top": 5,
+                            "bottom": 0,
+                        },
+                        {
+                            "top": 50,
+                            "bottom": 0,
+                        },
+                        {
+                            "top": 500,
+                            "bottom": 0,
+                        },
+                    ]
                 },
             }
         },
@@ -272,6 +316,7 @@ async def async_main():
         handler.start_background_jobs()
     try: 
         server = AsyncIOOSCUDPServer((SETTINGS["osc"]["listen_host"], SETTINGS["osc"]["listen_port"]), dispatcher, asyncio.get_event_loop())
+        logger.success(f'OSC Listening: {SETTINGS["osc"]["listen_host"]}:{SETTINGS["osc"]["listen_port"]}')
         transport, protocol = await server.create_serve_endpoint()
         # await wsserve(wshandler, "127.0.0.1", 8765)
     except Exception as e:
