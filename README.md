@@ -90,7 +90,9 @@ version: v0.2
   - /avatar/parameters/pcs/sps/mouth
   - /avatar/parameters/pcs/sps/penis*
   - /avatar/parameters/lms-penis-proximityA*
-    - 通过 LMS 触发可以使用的参数
+    - 通过 LMS 1.2 触发可以使用的参数
+  - /avatar/parameters/lms/contact/proximity
+    - 通过 LMS 1.3 触发可以使用的参数
 - bool
   - /avatar/parameters/pcs/smash-intense
   - /avatar/parameters/pcs/contact/in

@@ -88,7 +88,9 @@ version: v0.2
   - /avatar/parameters/pcs/sps/mouth
   - /avatar/parameters/pcs/sps/penis*
   - /avatar/parameters/lms-penis-proximityA*
-    - Parameters usable for triggering via LMS
+    - Parameters usable for triggering via LMS 1.2
+  - /avatar/parameters/lms/contact/proximity
+    - Parameters usable for triggering via LMS 1.3
 - bool
   - /avatar/parameters/pcs/smash-intense
   - /avatar/parameters/pcs/contact/in
