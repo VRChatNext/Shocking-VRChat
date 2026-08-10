@@ -1212,6 +1212,13 @@ async def api_v1_update_apply():
             f.write(f'goto WAIT_LOOP\n')
             # Copy files and check result
             f.write(f':COPY_FILES\n')
+            f.write(f'echo Backing up current version...\n')
+            f.write(f'if exist "{exe_dir}\\_backup" rmdir /s /q "{exe_dir}\\_backup"\n')
+            f.write(f'mkdir "{exe_dir}\\_backup"\n')
+            f.write(f'xcopy /s /y /q "{exe_dir}\\*.exe" "{exe_dir}\\_backup\\" >nul 2>&1\n')
+            f.write(f'xcopy /s /y /q "{exe_dir}\\*.dll" "{exe_dir}\\_backup\\" >nul 2>&1\n')
+            f.write(f'xcopy /s /y /q "{exe_dir}\\*.pyd" "{exe_dir}\\_backup\\" >nul 2>&1\n')
+            f.write(f'echo Applying update...\n')
             f.write(f'xcopy /s /y /q "{source_dir}\\*" "{exe_dir}\\"\n')
             f.write(f'if errorlevel 1 (\n')
             f.write(f'    echo.\n')
