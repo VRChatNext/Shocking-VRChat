@@ -2614,7 +2614,13 @@ def _start_tray_icon():
 
     def _on_quit(icon, item):
         icon.stop()
-        os._exit(0)
+        # Schedule graceful shutdown on the running event loop
+        try:
+            loop = asyncio.get_running_loop()
+            loop.call_soon_threadsafe(lambda: loop.create_task(_graceful_shutdown()))
+        except RuntimeError:
+            # No event loop running — fall back to hard exit
+            os._exit(0)
 
     port = SETTINGS['web_server']['listen_port']
     menu = pystray.Menu(
