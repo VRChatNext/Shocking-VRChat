@@ -1427,9 +1427,31 @@ def _restart_program():
         cmd = [sys.executable] + sys.argv
     if sys.platform == 'win32':
         subprocess.Popen(cmd, close_fds=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+        # Minimal cleanup before hard exit (new process already running, must release port)
+        _sync_cleanup_before_exit()
         os._exit(0)
     else:
+        _sync_cleanup_before_exit()
         os.execv(cmd[0], cmd)
+
+
+def _sync_cleanup_before_exit():
+    """Synchronous minimal cleanup: stop tray icon and flush logs.
+    
+    Used before os._exit / os.execv where async shutdown is not possible.
+    Does NOT stop the event loop or uvicorn (would deadlock in sync context).
+    """
+    global _tray_icon_ref
+    if _tray_icon_ref is not None:
+        try:
+            _tray_icon_ref.stop()
+        except Exception:
+            pass
+        _tray_icon_ref = None
+    try:
+        logger.complete()
+    except Exception:
+        pass
 
 
 # --- Params ---
@@ -2763,8 +2785,9 @@ def _start_tray_icon():
             loop = asyncio.get_running_loop()
             loop.call_soon_threadsafe(lambda: loop.create_task(_graceful_shutdown()))
         except RuntimeError:
-            # No event loop running — fall back to hard exit
-            os._exit(0)
+            # No event loop running — do synchronous cleanup and exit
+            _sync_cleanup_before_exit()
+            sys.exit(0)
 
     port = SETTINGS['web_server']['listen_port']
     menu = pystray.Menu(
