@@ -1182,6 +1182,10 @@ async def api_v1_update_apply():
             zf.extractall(extract_dir)
 
         # Find the actual content dir (might be nested)
+        # CI (GitHub Actions) packages as: shocking_vrchat_windows_x64.zip containing
+        # a single top-level directory "shocking_vrchat/" with all files inside.
+        # If the zip is flat (no wrapper dir), contents will have multiple entries
+        # and we use extract_dir directly. Both cases are handled correctly.
         contents = os.listdir(extract_dir)
         if len(contents) == 1 and os.path.isdir(os.path.join(extract_dir, contents[0])):
             source_dir = os.path.join(extract_dir, contents[0])
