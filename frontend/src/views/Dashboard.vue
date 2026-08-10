@@ -19,6 +19,10 @@ const canvasBRef = ref<HTMLCanvasElement | null>(null)
 const qrContent = ref('')
 const logs = ref<{text: string; level: string}[]>([])
 
+// V4 QR
+const qrContentV4 = ref('')
+const v4Enabled = ref(true)
+const qrMode = ref<'v3' | 'v4'>('v4')  // Default to V4
 // Profiles
 const profiles = ref<string[]>([])
 const profileName = ref('')
@@ -242,6 +246,11 @@ async function loadQr() {
     const data = await api('/api/v1/qr_payload')
     qrContent.value = data.content || ''
   } catch {}
+  try {
+    const data = await api('/api/v1/qr_payload_v4')
+    qrContentV4.value = data.content || ''
+    v4Enabled.value = data.enabled !== false
+  } catch {}
 }
 
 // Helpers
@@ -342,8 +351,15 @@ onUnmounted(() => {
         <!-- QR -->
         <section class="card">
           <h2>{{ t('dashboard.qrTitle') }}</h2>
-          <QrCode :content="qrContent" :size="240" />
-          <div class="qr-text">{{ qrContent }}</div>
+          <div class="qr-tabs">
+            <button class="qr-tab" :class="{ active: qrMode === 'v4' }" @click="qrMode = 'v4'" v-if="v4Enabled">V4</button>
+            <button class="qr-tab" :class="{ active: qrMode === 'v3' }" @click="qrMode = 'v3'">V3</button>
+          </div>
+          <div class="qr-badge" :class="qrMode">{{ qrMode === 'v4' ? t('dashboard.qrV4Badge') : t('dashboard.qrV3Badge') }}</div>
+          <QrCode :content="qrMode === 'v4' ? qrContentV4 : qrContent" :size="240" />
+          <div class="qr-text">{{ qrMode === 'v4' ? qrContentV4 : qrContent }}</div>
+          <div class="qr-hint" v-if="qrMode === 'v4'">{{ t('dashboard.qrV4Hint') }}</div>
+          <div class="qr-hint" v-else>{{ t('dashboard.qrV3Hint') }}</div>
         </section>
 
         <!-- Profiles -->
@@ -421,7 +437,15 @@ onUnmounted(() => {
 .osc-time { color: var(--text-muted); min-width: 52px; text-align: right; }
 
 /* QR */
+.qr-tabs { display: flex; gap: var(--sp-2); margin-bottom: var(--sp-3); }
+.qr-tab { padding: var(--sp-2) var(--sp-4); border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; color: var(--text-muted); cursor: pointer; font-size: var(--text-xs); font-weight: 600; transition: all var(--transition); }
+.qr-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(139,92,246,0.1); }
+.qr-tab:hover { border-color: var(--border-hover); color: var(--text); }
+.qr-badge { display: inline-block; padding: 2px 10px; border-radius: var(--radius-full); font-size: 10px; font-weight: 700; margin-bottom: var(--sp-3); }
+.qr-badge.v4 { background: rgba(52,211,153,0.12); color: var(--success); }
+.qr-badge.v3 { background: rgba(96,165,250,0.12); color: var(--info); }
 .qr-text { margin-top: var(--sp-3); font-size: var(--text-xs); font-family: var(--font); color: var(--text-muted); word-break: break-all; padding: var(--sp-2) var(--sp-3); background: rgba(139,92,246,0.05); border-radius: var(--radius-sm); }
+.qr-hint { margin-top: var(--sp-2); font-size: 11px; color: var(--text-muted); font-style: italic; }
 
 /* Wave */
 .wave-dual { display: flex; flex-direction: column; gap: var(--sp-2); }

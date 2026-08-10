@@ -14,6 +14,7 @@ from websockets.server import serve as wsserve
 
 import srv
 from srv.connector.coyotev3ws import DGWSMessage, DGConnection
+from srv.connector.coyotev4ws import DGV4Connection, DGV4RelayServer
 from srv.handler.shock_handler import ShockHandler
 from srv.command_queue import CommandQueue, CommandPriority
 
@@ -117,6 +118,7 @@ SETTINGS = {
         'master_uuid': None,
         'listen_host': '0.0.0.0',
         'listen_port': 28846,
+        'v4_enabled': True,
     },
     'osc': {
         'listen_host': '127.0.0.1',
@@ -322,6 +324,13 @@ def get_qr_content():
         f'{SERVER_IP}:{SETTINGS["ws"]["listen_port"]}/{SETTINGS["ws"]["master_uuid"]}'
     )
 
+def get_qr_content_v4():
+    """Generate V4 QR code content for DG-LAB 4 APP."""
+    import urllib.parse
+    ws_port = SETTINGS['web_server']['listen_port']
+    ws_url = f'ws://{SERVER_IP}:{ws_port}/ws/dglab-v4?tid={v4_relay.controller_id}'
+    return f'https://dungeon-lab.cn/s/?v=1&action=socket&url={urllib.parse.quote(ws_url, safe="")}'
+
 def _serve_spa():
     """Serve Vue SPA index.html with no-cache headers."""
     spa_index = os.path.join(STATIC_DIR, 'index.html')
@@ -413,6 +422,15 @@ async def api_v1_osc_activity():
 @app.get("/api/v1/qr_payload")
 async def api_v1_qr_payload():
     return {'content': get_qr_content()}
+
+@app.get("/api/v1/qr_payload_v4")
+async def api_v1_qr_payload_v4():
+    """Get V4 QR code content for DG-LAB 4 APP."""
+    return {
+        'content': get_qr_content_v4(),
+        'enabled': SETTINGS['ws'].get('v4_enabled', True),
+        'controller_id': v4_relay.controller_id,
+    }
 
 @app.get("/api/v1/strength/{channel}/{action}/{value}")
 async def api_v1_strength(channel: str, action: str, value: int):
@@ -869,6 +887,8 @@ async def api_v1_settings_update(request: Request):
         if 'listen_port' in ws:
             SETTINGS['ws']['listen_port'] = int(ws['listen_port'])
             restart_needed.append('ws')
+        if 'v4_enabled' in ws:
+            SETTINGS['ws']['v4_enabled'] = bool(ws['v4_enabled'])
     if 'web_server' in data:
         web = data['web_server']
         if 'listen_port' in web:
@@ -2024,6 +2044,9 @@ if os.path.exists(STATIC_DIR):
 # --- Shared state ---
 command_queue = CommandQueue()
 
+# --- V4 Relay Server ---
+v4_relay = DGV4RelayServer(SETTINGS)
+
 # --- Frontend WebSocket push ---
 _ws_clients: set[WebSocket] = set()
 _ws_subscriptions: dict[WebSocket, set] = {}  # ws -> set of topics ('wave_A', 'wave_B', 'osc', 'status')
@@ -2080,6 +2103,21 @@ async def ws_live(ws: WebSocket):
     finally:
         _ws_clients.discard(ws)
         _ws_subscriptions.pop(ws, None)
+
+
+@app.websocket("/ws/dglab-v4")
+async def ws_dglab_v4(ws: WebSocket, tid: str = None):
+    """DG-LAB V4 WebSocket relay endpoint.
+    
+    DG-LAB 4 APP connects here with ?tid=<controller_id> to be controlled.
+    This implements the V4 relay server protocol on the same HTTP port.
+    """
+    if not SETTINGS['ws'].get('v4_enabled', True):
+        await ws.close(4003, 'v4_disabled')
+        return
+    await ws.accept()
+    await v4_relay.handle_websocket(ws, tid=tid)
+
 
 # OSC activity ring buffer
 _osc_activity = collections.deque(maxlen=50)

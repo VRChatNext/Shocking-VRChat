@@ -8,6 +8,7 @@ const { t } = useI18n()
 const oscPort = ref(9001)
 const oscHost = ref('127.0.0.1')
 const wsPort = ref(28846)
+const v4Enabled = ref(true)
 const webPort = ref(8800)
 const webHost = ref('127.0.0.1')
 const githubMirror = ref('')
@@ -23,6 +24,7 @@ async function load() {
   oscPort.value = adv.osc?.listen_port || 9001
   oscHost.value = adv.osc?.listen_host || '127.0.0.1'
   wsPort.value = adv.ws?.listen_port || 28846
+  v4Enabled.value = adv.ws?.v4_enabled !== false
   webPort.value = adv.web_server?.listen_port || 8800
   webHost.value = adv.web_server?.listen_host || '127.0.0.1'
   logLevel.value = adv.log_level || 'INFO'
@@ -32,7 +34,7 @@ async function load() {
 async function save() {
   const data = await apiPost('/api/v1/settings', {
     osc: { listen_port: oscPort.value, listen_host: oscHost.value },
-    ws: { listen_port: wsPort.value },
+    ws: { listen_port: wsPort.value, v4_enabled: v4Enabled.value },
     web_server: { listen_port: webPort.value, listen_host: webHost.value },
     log_level: logLevel.value,
     github_mirror: githubMirror.value,
@@ -173,6 +175,14 @@ onMounted(() => { checkUpdate() })
           <input type="number" v-model.number="wsPort" min="1024" max="65535">
           <p class="hint">{{ t('settings.wsPortHint') }}</p>
         </div>
+        <div class="field">
+          <label>{{ t('settings.v4Title') }}</label>
+          <label class="toggle-row">
+            <input type="checkbox" v-model="v4Enabled">
+            <span>{{ v4Enabled ? t('common.enabled') : t('common.disabled') }}</span>
+          </label>
+          <p class="hint">{{ t('settings.v4Hint') }}</p>
+        </div>
       </section>
 
       <section class="card">
@@ -275,6 +285,8 @@ onMounted(() => { checkUpdate() })
 .field { margin-bottom: var(--sp-4); }
 .field:last-child { margin-bottom: 0; }
 .field label { display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--sp-2); font-weight: 500; }
+.toggle-row { display: flex; align-items: center; gap: var(--sp-2); cursor: pointer; font-size: var(--text-sm); }
+.toggle-row input[type="checkbox"] { width: auto; margin: 0; cursor: pointer; }
 .field input, .field select { width: 100%; }
 .hint { font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--sp-1); }
 .save-bar { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-5); padding: var(--sp-4); background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); }
