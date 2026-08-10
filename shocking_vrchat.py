@@ -2431,13 +2431,17 @@ class ConfigFileInited(Exception):
 
 def config_init():
     logger.info(f'[init] Loading config: {CONFIG_FILENAME_BASIC}, {CONFIG_FILENAME}')
-    global SETTINGS, SETTINGS_BASIC, SERVER_IP
+    global SERVER_IP
     if not (os.path.exists(CONFIG_FILENAME) and os.path.exists(CONFIG_FILENAME_BASIC)):
         SETTINGS['ws']['master_uuid'] = str(uuid.uuid4())
         config_save()
         raise ConfigFileInited()
 
-    SETTINGS, SETTINGS_BASIC = load_config_files()
+    new_settings, new_basic = load_config_files()
+    SETTINGS.clear()
+    SETTINGS.update(new_settings)
+    SETTINGS_BASIC.clear()
+    SETTINGS_BASIC.update(new_basic)
 
     if SETTINGS.get('version', None) != CONFIG_FILE_VERSION or SETTINGS_BASIC.get('version', None) != CONFIG_FILE_VERSION:
         logger.error(f"[init] Config version mismatch! Delete {CONFIG_FILENAME_BASIC} and {CONFIG_FILENAME} and restart.")
