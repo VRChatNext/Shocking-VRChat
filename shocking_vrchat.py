@@ -1073,6 +1073,7 @@ async def api_v1_logs():
 # --- Auto Update ---
 _update_cache: dict = {}
 _update_cache_time = 0.0
+_update_lock = asyncio.Lock()
 
 def _get_github_mirror() -> str:
     """Get configured GitHub mirror prefix (empty string = direct)."""
@@ -1093,10 +1094,106 @@ def _apply_mirror(url: str) -> str:
     # Proxy format: mirror_prefix/original_url
     return f'{mirror}/{url}'
 
+
+def _blocking_update_check():
+    """Blocking HTTP call to GitHub API. Run via asyncio.to_thread()."""
+    import urllib.request
+    api_url = f'https://api.github.com/repos/{GITHUB_REPO}/releases/latest'
+    url = _apply_mirror(api_url)
+    req = urllib.request.Request(url, headers={'Accept': 'application/vnd.github.v3+json', 'User-Agent': 'ShockingVRChat'})
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        return json.loads(resp.read().decode())
+
+
+def _blocking_download(url: str, dest_path: str, expected_size: int = 0):
+    """Blocking file download with progress logging. Run via asyncio.to_thread()."""
+    import urllib.request
+    req = urllib.request.Request(url, headers={'User-Agent': 'ShockingVRChat'})
+    with urllib.request.urlopen(req, timeout=120) as resp:
+        total = int(resp.headers.get('Content-Length', 0)) or expected_size
+        downloaded = 0
+        last_log_pct = -10
+        with open(dest_path, 'wb') as f:
+            while True:
+                chunk = resp.read(65536)
+                if not chunk:
+                    break
+                f.write(chunk)
+                downloaded += len(chunk)
+                if total > 0:
+                    pct = int(downloaded * 100 / total)
+                    if pct - last_log_pct >= 10:
+                        logger.info(f"[update] Download progress: {pct}% ({downloaded}/{total})")
+                        last_log_pct = pct
+    return downloaded
+
+
+def _verify_zip_integrity(zip_path: str, expected_size: int, expected_sha256: str | None):
+    """Verify downloaded file size and SHA256 hash. Returns error message or None."""
+    import hashlib
+
+    actual_size = os.path.getsize(zip_path)
+    if expected_size > 0 and actual_size != expected_size:
+        return f"Size mismatch: expected {expected_size}, got {actual_size}"
+
+    if expected_sha256:
+        sha256 = hashlib.sha256()
+        with open(zip_path, 'rb') as f:
+            while True:
+                chunk = f.read(65536)
+                if not chunk:
+                    break
+                sha256.update(chunk)
+        actual_hash = sha256.hexdigest()
+        if actual_hash.lower() != expected_sha256.lower():
+            return f"SHA256 mismatch: expected {expected_sha256[:16]}..., got {actual_hash[:16]}..."
+
+    return None
+
+
+def _check_zip_slip(zf, extract_dir: str) -> str | None:
+    """Check for zip slip (path traversal) attacks. Returns malicious path or None."""
+    abs_extract = os.path.realpath(extract_dir)
+    for info in zf.infolist():
+        member_path = os.path.join(extract_dir, info.filename)
+        abs_member = os.path.realpath(member_path)
+        if not abs_member.startswith(abs_extract + os.sep) and abs_member != abs_extract:
+            return info.filename
+    return None
+
+
+def _try_fetch_sha256(assets: list, zip_name: str) -> str | None:
+    """Try to download sha256sums.txt from release assets and find hash for our file."""
+    import urllib.request
+    sha_url = None
+    for asset in assets:
+        name = asset.get('name', '').lower()
+        if 'sha256' in name and name.endswith('.txt'):
+            sha_url = asset.get('browser_download_url')
+            break
+    if not sha_url:
+        return None
+    try:
+        actual_url = _apply_mirror(sha_url)
+        req = urllib.request.Request(actual_url, headers={'User-Agent': 'ShockingVRChat'})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            content = resp.read().decode('utf-8', errors='replace')
+        for line in content.strip().splitlines():
+            parts = line.strip().split()
+            if len(parts) >= 2:
+                # Format: hash  filename (or hash *filename)
+                hash_val = parts[0]
+                fname = parts[-1].lstrip('*')
+                if fname == zip_name or fname.endswith('/' + zip_name):
+                    return hash_val
+    except Exception as e:
+        logger.warning(f"[update] Could not fetch sha256sums.txt: {e}")
+    return None
+
+
 @app.get("/api/v1/update/check")
 async def api_v1_update_check():
     """Check GitHub releases for a newer version."""
-    import urllib.request
     global _update_cache, _update_cache_time
 
     # Cache for 5 minutes
@@ -1104,11 +1201,7 @@ async def api_v1_update_check():
         return _update_cache
 
     try:
-        api_url = f'https://api.github.com/repos/{GITHUB_REPO}/releases/latest'
-        url = _apply_mirror(api_url)
-        req = urllib.request.Request(url, headers={'Accept': 'application/vnd.github.v3+json', 'User-Agent': 'ShockingVRChat'})
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            data = json.loads(resp.read().decode())
+        data = await asyncio.to_thread(_blocking_update_check)
     except Exception as e:
         return {'current': APP_VERSION, 'latest': None, 'update_available': False, 'error': str(e)}
 
@@ -1118,16 +1211,22 @@ async def api_v1_update_check():
 
     # Find download URL for the onedir zip
     download_url = None
+    download_size = 0
+    download_name = ''
     assets = data.get('assets', [])
     for asset in assets:
         name = asset.get('name', '')
         if 'windows_x64.zip' in name and 'onefile' not in name:
             download_url = asset.get('browser_download_url')
+            download_size = asset.get('size', 0)
+            download_name = name
             break
     if not download_url:
         for asset in assets:
             if asset.get('name', '').endswith('.zip'):
                 download_url = asset.get('browser_download_url')
+                download_size = asset.get('size', 0)
+                download_name = asset.get('name', '')
                 break
 
     _update_cache = {
@@ -1136,6 +1235,9 @@ async def api_v1_update_check():
         'latest_tag': latest_tag,
         'update_available': update_available,
         'download_url': download_url,
+        'download_size': download_size,
+        'download_name': download_name,
+        'assets': assets,
         'release_name': data.get('name', ''),
         'release_notes': data.get('body', '')[:2000],
         'published_at': data.get('published_at', ''),
@@ -1147,124 +1249,166 @@ async def api_v1_update_check():
 @app.post("/api/v1/update/apply")
 async def api_v1_update_apply():
     """Download and apply the latest update. Replaces files and restarts."""
-    import urllib.request
     import zipfile
     import shutil
     import tempfile
 
-    # Only works for frozen (packaged) builds
-    if not getattr(sys, 'frozen', False):
-        raise HTTPException(400, '仅打包版本支持自动更新，开发环境请使用 git pull')
+    # Concurrency guard: only one update at a time
+    if _update_lock.locked():
+        raise HTTPException(409, '更新正在进行中，请勿重复操作')
 
-    check = await api_v1_update_check()
-    if not check.get('update_available'):
-        return {'success': False, 'message': '当前已是最新版本'}
-    download_url = check.get('download_url')
-    if not download_url:
-        raise HTTPException(400, '未找到可下载的更新文件')
+    async with _update_lock:
+        # Only works for frozen (packaged) builds
+        if not getattr(sys, 'frozen', False):
+            raise HTTPException(400, '仅打包版本支持自动更新，开发环境请使用 git pull')
 
-    exe_dir = get_exe_dir()
-    tmp_dir = tempfile.mkdtemp(prefix='svrc_update_')
-    zip_path = os.path.join(tmp_dir, 'update.zip')
+        check = await api_v1_update_check()
+        if not check.get('update_available'):
+            return {'success': False, 'message': '当前已是最新版本'}
+        download_url = check.get('download_url')
+        if not download_url:
+            raise HTTPException(400, '未找到可下载的更新文件')
 
-    try:
-        actual_url = _apply_mirror(download_url)
-        logger.info(f"[update] Downloading: {actual_url}")
-        req = urllib.request.Request(actual_url, headers={'User-Agent': 'ShockingVRChat'})
-        with urllib.request.urlopen(req, timeout=120) as resp:
-            with open(zip_path, 'wb') as f:
-                shutil.copyfileobj(resp, f)
-        logger.info(f"[update] Downloaded to {zip_path}")
+        expected_size = check.get('download_size', 0)
+        download_name = check.get('download_name', '')
+        assets = check.get('assets', [])
 
-        # Extract
-        extract_dir = os.path.join(tmp_dir, 'extracted')
-        with zipfile.ZipFile(zip_path, 'r') as zf:
-            zf.extractall(extract_dir)
+        exe_dir = get_exe_dir()
+        tmp_dir = tempfile.mkdtemp(prefix='svrc_update_')
+        zip_path = os.path.join(tmp_dir, 'update.zip')
 
-        # Find the actual content dir (might be nested)
-        # CI (GitHub Actions) packages as: shocking_vrchat_windows_x64.zip containing
-        # a single top-level directory "shocking_vrchat/" with all files inside.
-        # If the zip is flat (no wrapper dir), contents will have multiple entries
-        # and we use extract_dir directly. Both cases are handled correctly.
-        contents = os.listdir(extract_dir)
-        if len(contents) == 1 and os.path.isdir(os.path.join(extract_dir, contents[0])):
-            source_dir = os.path.join(extract_dir, contents[0])
-        else:
-            source_dir = extract_dir
-
-        # Write update script that replaces files after this process exits
-        bat_path = os.path.join(tmp_dir, 'apply_update.bat')
-        pid = os.getpid()
-        exe_path = os.path.join(exe_dir, "shocking_vrchat.exe")
-        with open(bat_path, 'w', encoding='utf-8') as f:
-            f.write('@echo off\n')
-            f.write('chcp 65001 >nul 2>&1\n')
-            f.write('echo Waiting for process to exit...\n')
-            # Wait for the process to exit (poll by PID, max 10s)
-            f.write(f'set WAIT_COUNT=0\n')
-            f.write(f':WAIT_LOOP\n')
-            f.write(f'tasklist /FI "PID eq {pid}" 2>nul | find /I "{pid}" >nul\n')
-            f.write(f'if errorlevel 1 goto COPY_FILES\n')
-            f.write(f'set /a WAIT_COUNT+=1\n')
-            f.write(f'if %WAIT_COUNT% GEQ 20 (\n')
-            f.write(f'    echo Process did not exit in 10s, force killing...\n')
-            f.write(f'    taskkill /F /PID {pid} >nul 2>&1\n')
-            f.write(f'    timeout /t 1 /nobreak >nul\n')
-            f.write(f'    goto COPY_FILES\n')
-            f.write(f')\n')
-            f.write(f'timeout /t 1 /nobreak >nul\n')
-            f.write(f'goto WAIT_LOOP\n')
-            # Copy files and check result
-            f.write(f':COPY_FILES\n')
-            f.write(f'echo Backing up current version...\n')
-            f.write(f'if exist "{exe_dir}\\_backup" rmdir /s /q "{exe_dir}\\_backup"\n')
-            f.write(f'mkdir "{exe_dir}\\_backup"\n')
-            f.write(f'xcopy /s /y /q "{exe_dir}\\*.exe" "{exe_dir}\\_backup\\" >nul 2>&1\n')
-            f.write(f'xcopy /s /y /q "{exe_dir}\\*.dll" "{exe_dir}\\_backup\\" >nul 2>&1\n')
-            f.write(f'xcopy /s /y /q "{exe_dir}\\*.pyd" "{exe_dir}\\_backup\\" >nul 2>&1\n')
-            f.write(f'echo Applying update...\n')
-            f.write(f'xcopy /s /y /q "{source_dir}\\*" "{exe_dir}\\"\n')
-            f.write(f'if errorlevel 1 (\n')
-            f.write(f'    echo.\n')
-            f.write(f'    echo [ERROR] File copy failed. Some files may be locked.\n')
-            f.write(f'    echo Please close all related programs and manually copy files from:\n')
-            f.write(f'    echo   {source_dir}\n')
-            f.write(f'    echo to:\n')
-            f.write(f'    echo   {exe_dir}\n')
-            f.write(f'    echo.\n')
-            f.write(f'    pause\n')
-            f.write(f'    exit /b 1\n')
-            f.write(f')\n')
-            f.write(f'echo Update complete. Starting...\n')
-            f.write(f'start "" "{exe_path}"\n')
-            f.write(f'rmdir /s /q "{tmp_dir}"\n')
-            f.write('exit\n')
-
-        # Launch the update script and exit
-        logger.info("[update] Launching update script and exiting...")
-        import subprocess
-        subprocess.Popen(
-            ['cmd', '/c', bat_path],
-            creationflags=0x00000008,  # DETACHED_PROCESS
-            close_fds=True,
-        )
-
-        # Schedule graceful shutdown
-        async def _shutdown():
-            await asyncio.sleep(0.5)
-            await _graceful_shutdown()
-        asyncio.create_task(_shutdown())
-
-        return {'success': True, 'message': '更新下载完成，正在应用更新并重启...'}
-
-    except Exception as e:
-        logger.error(f"[update] Failed: {e}")
-        # Cleanup
         try:
-            shutil.rmtree(tmp_dir, ignore_errors=True)
-        except:
-            pass
-        raise HTTPException(500, f'更新失败: {e}')
+            # --- Download (non-blocking) ---
+            actual_url = _apply_mirror(download_url)
+            logger.info(f"[update] Downloading: {actual_url}")
+            downloaded_size = await asyncio.to_thread(
+                _blocking_download, actual_url, zip_path, expected_size
+            )
+            logger.info(f"[update] Downloaded {downloaded_size} bytes to {zip_path}")
+
+            # --- Integrity check ---
+            # Try to get SHA256 from release assets
+            expected_sha256 = await asyncio.to_thread(
+                _try_fetch_sha256, assets, download_name
+            )
+            if expected_sha256:
+                logger.info(f"[update] SHA256 from release: {expected_sha256[:16]}...")
+
+            integrity_error = _verify_zip_integrity(zip_path, expected_size, expected_sha256)
+            if integrity_error:
+                logger.error(f"[update] Integrity check failed: {integrity_error}")
+                raise HTTPException(500, f'文件完整性校验失败: {integrity_error}')
+
+            logger.info("[update] Integrity check passed")
+
+            # --- Zip Slip protection ---
+            extract_dir = os.path.join(tmp_dir, 'extracted')
+            with zipfile.ZipFile(zip_path, 'r') as zf:
+                malicious_path = _check_zip_slip(zf, extract_dir)
+                if malicious_path:
+                    logger.error(f"[update] Zip slip detected! Malicious path: {malicious_path}")
+                    raise HTTPException(500, f'压缩包包含恶意路径，更新已中止: {malicious_path}')
+                zf.extractall(extract_dir)
+
+            # Find the actual content dir (might be nested)
+            # CI (GitHub Actions) packages as: shocking_vrchat_windows_x64.zip containing
+            # a single top-level directory "shocking_vrchat/" with all files inside.
+            # If the zip is flat (no wrapper dir), contents will have multiple entries
+            # and we use extract_dir directly. Both cases are handled correctly.
+            contents = os.listdir(extract_dir)
+            if len(contents) == 1 and os.path.isdir(os.path.join(extract_dir, contents[0])):
+                source_dir = os.path.join(extract_dir, contents[0])
+            else:
+                source_dir = extract_dir
+
+            # Write update script that replaces files after this process exits
+            bat_path = os.path.join(tmp_dir, 'apply_update.bat')
+            pid = os.getpid()
+            exe_path = os.path.join(exe_dir, "shocking_vrchat.exe")
+            # Directories to exclude from backup (user data, not program files)
+            exclude_dirs = ['_backup', 'wave_presets', 'dg-lab', 'profiles', 'recordings']
+            exclude_files = [CONFIG_FILENAME, CONFIG_FILENAME_BASIC, 'curve_config.yaml',
+                            'overlimit_rules.yaml', 'shocking_vrchat.log', 'error.log']
+            with open(bat_path, 'w', encoding='utf-8') as f:
+                f.write('@echo off\n')
+                f.write('chcp 65001 >nul 2>&1\n')
+                f.write('echo Waiting for process to exit...\n')
+                # Wait for the process to exit (poll by PID, max 10s)
+                f.write(f'set WAIT_COUNT=0\n')
+                f.write(f':WAIT_LOOP\n')
+                f.write(f'tasklist /FI "PID eq {pid}" 2>nul | find /I "{pid}" >nul\n')
+                f.write(f'if errorlevel 1 goto COPY_FILES\n')
+                f.write(f'set /a WAIT_COUNT+=1\n')
+                f.write(f'if %WAIT_COUNT% GEQ 20 (\n')
+                f.write(f'    echo Process did not exit in 10s, force killing...\n')
+                f.write(f'    taskkill /F /PID {pid} >nul 2>&1\n')
+                f.write(f'    timeout /t 1 /nobreak >nul\n')
+                f.write(f'    goto COPY_FILES\n')
+                f.write(f')\n')
+                f.write(f'timeout /t 1 /nobreak >nul\n')
+                f.write(f'goto WAIT_LOOP\n')
+                # Backup and copy
+                f.write(f':COPY_FILES\n')
+                f.write(f'echo Backing up current version...\n')
+                f.write(f'if exist "{exe_dir}\\_backup" rmdir /s /q "{exe_dir}\\_backup"\n')
+                f.write(f'mkdir "{exe_dir}\\_backup"\n')
+                # Use robocopy for comprehensive backup with exclusions
+                exclude_dir_args = ' '.join(f'"{d}"' for d in exclude_dirs)
+                exclude_file_args = ' '.join(f'"{ef}"' for ef in exclude_files)
+                f.write(f'robocopy "{exe_dir}" "{exe_dir}\\_backup" /s /xd {exclude_dir_args} /xf {exclude_file_args} >nul 2>&1\n')
+                f.write(f'echo Applying update...\n')
+                f.write(f'xcopy /s /y /q "{source_dir}\\*" "{exe_dir}\\"\n')
+                f.write(f'if errorlevel 1 (\n')
+                f.write(f'    echo.\n')
+                f.write(f'    echo [ERROR] File copy failed. Attempting rollback from backup...\n')
+                f.write(f'    xcopy /s /y /q "{exe_dir}\\_backup\\*" "{exe_dir}\\"\n')
+                f.write(f'    if errorlevel 1 (\n')
+                f.write(f'        echo.\n')
+                f.write(f'        echo [ERROR] Rollback also failed!\n')
+                f.write(f'        echo Please manually restore from: {exe_dir}\\_backup\n')
+                f.write(f'        echo Or manually copy update files from: {source_dir}\n')
+                f.write(f'        echo.\n')
+                f.write(f'        pause\n')
+                f.write(f'        exit /b 1\n')
+                f.write(f'    )\n')
+                f.write(f'    echo Rollback successful. Update cancelled.\n')
+                f.write(f'    echo Starting previous version...\n')
+                f.write(f'    start "" "{exe_path}"\n')
+                f.write(f'    rmdir /s /q "{tmp_dir}"\n')
+                f.write(f'    exit\n')
+                f.write(f')\n')
+                f.write(f'echo Update complete. Starting...\n')
+                f.write(f'start "" "{exe_path}"\n')
+                f.write(f'rmdir /s /q "{tmp_dir}"\n')
+                f.write('exit\n')
+
+            # Launch the update script and exit
+            logger.info("[update] Launching update script and exiting...")
+            import subprocess
+            subprocess.Popen(
+                ['cmd', '/c', bat_path],
+                creationflags=0x00000008,  # DETACHED_PROCESS
+                close_fds=True,
+            )
+
+            # Schedule graceful shutdown
+            async def _shutdown():
+                await asyncio.sleep(0.5)
+                await _graceful_shutdown()
+            asyncio.create_task(_shutdown())
+
+            return {'success': True, 'message': '更新下载完成，正在应用更新并重启...'}
+
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"[update] Failed: {e}")
+            # Cleanup
+            try:
+                shutil.rmtree(tmp_dir, ignore_errors=True)
+            except:
+                pass
+            raise HTTPException(500, f'更新失败: {e}')
 
 def _version_newer(latest: str, current: str) -> bool:
     """Check if latest version is newer than current (semver comparison)."""
