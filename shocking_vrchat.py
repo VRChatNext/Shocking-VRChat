@@ -1020,13 +1020,48 @@ async def api_v1_engine_restart():
 async def api_v1_engine_status():
     return {'running': engine.running}
 
+
+async def _graceful_shutdown():
+    """Gracefully shutdown: stop engine, tray, uvicorn, flush logs, then exit."""
+    global _tray_icon_ref, _uvicorn_server
+    logger.info("[shutdown] Graceful shutdown initiated...")
+
+    # 1. Stop the engine (OSC, WS server, handlers)
+    try:
+        await engine.stop(keep_ws=False)
+    except Exception as e:
+        logger.warning(f"[shutdown] Engine stop error: {e}")
+
+    # 2. Stop tray icon (releases Win32 message loop / thread)
+    if _tray_icon_ref is not None:
+        try:
+            _tray_icon_ref.stop()
+        except Exception:
+            pass
+        _tray_icon_ref = None
+
+    # 3. Signal uvicorn to exit
+    if _uvicorn_server is not None:
+        _uvicorn_server.should_exit = True
+
+    # 4. Flush loguru sinks
+    try:
+        logger.complete()
+    except Exception:
+        pass
+
+    # 5. Give a moment for cleanup, then exit
+    await asyncio.sleep(0.3)
+    sys.exit(0)
+
+
 @app.post("/api/v1/shutdown")
 async def api_v1_shutdown():
     """Shutdown the entire program."""
     logger.info("[shutdown] Shutdown requested via API.")
     async def _do_shutdown():
         await asyncio.sleep(0.5)
-        os._exit(0)
+        await _graceful_shutdown()
     asyncio.create_task(_do_shutdown())
     return {'success': True, 'message': 'Shutting down...'}
 
@@ -1203,10 +1238,10 @@ async def api_v1_update_apply():
             close_fds=True,
         )
 
-        # Schedule shutdown
+        # Schedule graceful shutdown
         async def _shutdown():
             await asyncio.sleep(0.5)
-            os._exit(0)
+            await _graceful_shutdown()
         asyncio.create_task(_shutdown())
 
         return {'success': True, 'message': '更新下载完成，正在应用更新并重启...'}
@@ -2080,6 +2115,10 @@ if os.path.exists(STATIC_DIR):
 # --- Shared state ---
 command_queue = CommandQueue()
 
+# --- Graceful shutdown state ---
+_uvicorn_server = None  # Set when uvicorn starts (Server instance)
+_tray_icon_ref = None   # Set when tray icon starts (pystray.Icon instance)
+
 # --- V4 Relay Server ---
 v4_relay = DGV4RelayServer(SETTINGS)
 
@@ -2584,6 +2623,7 @@ def _run_with_tray():
     This is the default mode on Windows when --no-tray is not specified.
     The Win32 tray message loop requires the main thread, so uvicorn runs in a daemon thread.
     """
+    global _uvicorn_server, _tray_icon_ref
     try:
         import pystray
         from PIL import Image, ImageDraw
@@ -2603,6 +2643,7 @@ def _run_with_tray():
         access_log=False,
     )
     server = uvicorn.Server(uvicorn_config)
+    _uvicorn_server = server
 
     def _uvicorn_thread():
         server.run()
@@ -2628,6 +2669,7 @@ def _run_with_tray():
         pystray.MenuItem('退出', _on_quit),
     )
     icon = pystray.Icon('ShockingVRChat', _create_tray_icon_image(), 'Shocking VRChat', menu)
+    _tray_icon_ref = icon
 
     logger.info("[tray] System tray icon running in main thread.")
     # icon.run() blocks the main thread with Win32 message pump
