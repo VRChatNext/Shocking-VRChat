@@ -145,9 +145,13 @@ async function applyUpdate() {
   }
 }
 
+const updatePollTimedOut = ref(false)
+
 function pollForRestart() {
   let attempts = 0
   const maxAttempts = 15 // 15 × 2s = 30s max
+  updatePollTimedOut.value = false
+  updateMsg.value = t('settings.updateWaitingRestart')
   const interval = setInterval(async () => {
     attempts++
     try {
@@ -161,10 +165,23 @@ function pollForRestart() {
     }
     if (attempts >= maxAttempts) {
       clearInterval(interval)
-      updateMsg.value = t('settings.updateDone')
+      updateMsg.value = t('settings.updatePollTimeout')
+      updateErr.value = false
       updateApplying.value = false
+      updatePollTimedOut.value = true
     }
   }, 2000)
+}
+
+function retryPoll() {
+  updatePollTimedOut.value = false
+  updateApplying.value = true
+  updateErr.value = false
+  pollForRestart()
+}
+
+function manualRefresh() {
+  window.location.reload()
 }
 
 onMounted(() => { checkUpdate() })
@@ -288,14 +305,24 @@ onMounted(() => { checkUpdate() })
         </div>
       </div>
       <div class="ie-bar" style="margin-top:var(--sp-3)">
-        <button class="btn btn-ghost" @click="checkUpdate" :disabled="updateChecking">{{ t('settings.updateCheck') }}</button>
+        <button class="btn btn-ghost" @click="checkUpdate" :disabled="updateChecking || updateApplying">{{ t('settings.updateCheck') }}</button>
         <button
-          v-if="updateInfo?.update_available"
+          v-if="updateInfo?.update_available && !updatePollTimedOut"
           class="btn btn-primary"
           @click="applyUpdate"
           :disabled="updateApplying"
         >{{ updateApplying ? t('settings.updateApplying') : t('settings.updateApply') }}</button>
-        <span class="msg" :class="{ err: updateErr }">{{ updateMsg }}</span>
+        <button
+          v-if="updatePollTimedOut"
+          class="btn btn-primary"
+          @click="retryPoll"
+        >{{ t('settings.updateRetryPoll') }}</button>
+        <button
+          v-if="updatePollTimedOut"
+          class="btn btn-ghost"
+          @click="manualRefresh"
+        >{{ t('settings.updateManualRefresh') }}</button>
+        <span class="msg" :class="{ err: updateErr, waiting: updateApplying && !updateErr }">{{ updateMsg }}</span>
       </div>
     </section>
   </div>
@@ -315,6 +342,8 @@ onMounted(() => { checkUpdate() })
 .ie-bar { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
 .msg { font-size: var(--text-sm); color: var(--success); }
 .msg.err { color: var(--danger); }
+.msg.waiting { color: var(--accent); animation: pulse-text 1.5s ease-in-out infinite; }
+@keyframes pulse-text { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 .update-info { display: flex; flex-direction: column; gap: var(--sp-2); }
 .update-row { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--text-sm); }
 .update-label { color: var(--text-muted); min-width: 80px; }
