@@ -1044,9 +1044,16 @@ def _get_github_mirror() -> str:
     return (SETTINGS.get('general', {}).get('github_mirror') or '').strip().rstrip('/')
 
 def _apply_mirror(url: str) -> str:
-    """Apply GitHub mirror proxy to a URL if configured."""
+    """Apply GitHub mirror proxy to a download URL if configured.
+    
+    Only proxies github.com download links (releases, raw files).
+    Does NOT proxy api.github.com — most mirrors don't support API proxying.
+    """
     mirror = _get_github_mirror()
     if not mirror:
+        return url
+    # Don't proxy API requests — mirrors typically only handle download URLs
+    if 'api.github.com' in url:
         return url
     # Proxy format: mirror_prefix/original_url
     return f'{mirror}/{url}'
