@@ -131,8 +131,8 @@ async function applyUpdate() {
     if (data.success) {
       updateMsg.value = '✓ ' + data.message + ' ' + t('settings.updateDone')
       updateErr.value = false
-      // Wait and reload
-      setTimeout(() => window.location.reload(), 8000)
+      // Poll until new server is ready, then reload
+      pollForRestart()
     } else {
       updateMsg.value = '✗ ' + (data.detail || data.message || t('settings.updateFailed'))
       updateErr.value = true
@@ -143,6 +143,28 @@ async function applyUpdate() {
     updateErr.value = true
     updateApplying.value = false
   }
+}
+
+function pollForRestart() {
+  let attempts = 0
+  const maxAttempts = 15 // 15 × 2s = 30s max
+  const interval = setInterval(async () => {
+    attempts++
+    try {
+      const res = await fetch('/api/v1/status', { signal: AbortSignal.timeout(3000) })
+      if (res.ok) {
+        clearInterval(interval)
+        window.location.reload()
+      }
+    } catch {
+      // Server not ready yet
+    }
+    if (attempts >= maxAttempts) {
+      clearInterval(interval)
+      updateMsg.value = t('settings.updateDone')
+      updateApplying.value = false
+    }
+  }, 2000)
 }
 
 onMounted(() => { checkUpdate() })
