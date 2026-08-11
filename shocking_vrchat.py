@@ -2358,17 +2358,18 @@ async def ws_live(ws: WebSocket):
 
 
 @app.websocket("/ws/dglab-v4")
-async def ws_dglab_v4(ws: WebSocket, tid: str = None):
+async def ws_dglab_v4(ws: WebSocket, tid: str = None, targetId: str = None):
     """DG-LAB V4 WebSocket relay endpoint.
     
     DG-LAB 4 APP connects here with ?tid=<controller_id> to be controlled.
-    This implements the V4 relay server protocol on the same HTTP port.
+    Also accepts ?targetId= as fallback per DG-LAB official reference implementation.
     """
     if not SETTINGS['ws'].get('v4_enabled', True):
         await ws.close(4003, 'v4_disabled')
         return
     await ws.accept()
-    await v4_relay.handle_websocket(ws, tid=tid)
+    target_id = tid or targetId
+    await v4_relay.handle_websocket(ws, tid=target_id)
 
 
 # OSC activity ring buffer
