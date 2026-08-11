@@ -125,7 +125,7 @@ SETTINGS = {
         'listen_port': 9001,
     },
     'web_server': {
-        'listen_host': '127.0.0.1',
+        'listen_host': '0.0.0.0',
         'listen_port': 8800,
     },
     'log_level': 'INFO',
