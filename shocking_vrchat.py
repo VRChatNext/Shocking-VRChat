@@ -44,7 +44,7 @@ app = FastAPI(docs_url=None, redoc_url=None)
 WAVE_HISTORY_SAMPLE_MS = 25
 
 CONFIG_FILE_VERSION  = 'v0.2'
-APP_VERSION = '0.6.2'  # Semantic version of the application
+APP_VERSION = '0.6.3'  # Semantic version of the application
 GITHUB_REPO = 'MoLiYue/Shocking-VRChat'
 CONFIG_FILENAME = f'settings-advanced-{CONFIG_FILE_VERSION}.yaml'
 CONFIG_FILENAME_BASIC = f'settings-{CONFIG_FILE_VERSION}.yaml'
