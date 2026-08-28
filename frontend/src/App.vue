@@ -30,6 +30,7 @@ const navItems = computed<NavItem[]>(() => [
   { path: '/wave-test', label: t('nav.waveTest'), icon: '🧪' },
   { path: '/logs', label: t('nav.logs'), icon: '📋' },
   { path: '/recorder', label: t('nav.recorder'), icon: '🎙' },
+  { path: '/chatbox', label: t('nav.chatbox'), icon: '💬' },
   { path: '/settings', label: t('nav.settings'), icon: '⚙' },
 ])
 

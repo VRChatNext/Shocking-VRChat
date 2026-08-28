@@ -20,6 +20,7 @@ const router = createRouter({
     { path: '/overlimit-rules', component: () => import('./views/OverlimitRules.vue') },
     { path: '/wave-test', component: () => import('./views/WaveTest.vue') },
     { path: '/logs', component: () => import('./views/Logs.vue') },
+    { path: '/chatbox', component: () => import('./views/Chatbox.vue') },
     // Legacy redirects
     { path: '/curve', redirect: '/mode/distance' },
     { path: '/combo', redirect: '/mode/combo' },

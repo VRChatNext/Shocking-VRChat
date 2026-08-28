@@ -138,6 +138,15 @@ SETTINGS = {
         },
         'github_mirror': '',  # e.g. 'https://mirror.ghproxy.com/' for China mainland
     },
+    'chatbox': {
+        'enabled': False,
+        'target_host': '127.0.0.1',
+        'target_port': 9000,
+        'interval_seconds': 3.0,
+        'send_notification': True,  # True = send immediately, False = use keyboard overlay
+        'trigger_sfx': False,
+        'message_template': 'Shocking VRChat ⚡ A:{strength_a} B:{strength_b}',
+    },
 }
 DEFAULT_SETTINGS_BASIC = copy.deepcopy(SETTINGS_BASIC)
 DEFAULT_SETTINGS = copy.deepcopy(SETTINGS)
@@ -1069,6 +1078,61 @@ async def api_v1_shutdown():
 async def api_v1_logs():
     """Get recent log entries."""
     return {'logs': _log_buffer[-200:]}
+
+# --- Chatbox ---
+@app.get("/api/v1/chatbox")
+async def api_v1_chatbox_get():
+    return SETTINGS.get('chatbox', {
+        'enabled': False,
+        'target_host': '127.0.0.1',
+        'target_port': 9000,
+        'interval_seconds': 3.0,
+        'send_notification': True,
+        'trigger_sfx': False,
+        'message_template': 'Shocking VRChat ⚡ A:{strength_a} B:{strength_b}',
+    })
+
+@app.post("/api/v1/chatbox")
+async def api_v1_chatbox_set(request: Request):
+    data = await request.json()
+    chatbox = SETTINGS.setdefault('chatbox', {})
+    if 'enabled' in data:
+        chatbox['enabled'] = bool(data['enabled'])
+    if 'target_host' in data:
+        chatbox['target_host'] = str(data['target_host']).strip() or '127.0.0.1'
+    if 'target_port' in data:
+        chatbox['target_port'] = int(data['target_port'])
+    if 'interval_seconds' in data:
+        chatbox['interval_seconds'] = max(0.5, float(data['interval_seconds']))
+    if 'send_notification' in data:
+        chatbox['send_notification'] = bool(data['send_notification'])
+    if 'trigger_sfx' in data:
+        chatbox['trigger_sfx'] = bool(data['trigger_sfx'])
+    if 'message_template' in data:
+        chatbox['message_template'] = str(data['message_template'])
+    config_save()
+    # Restart sender if needed
+    if chatbox.get('enabled'):
+        _stop_chatbox_sender()
+        _start_chatbox_sender()
+    else:
+        _stop_chatbox_sender()
+    return {'success': True, 'chatbox': chatbox}
+
+@app.post("/api/v1/chatbox/test")
+async def api_v1_chatbox_test(request: Request):
+    """Send a single test message to chatbox."""
+    from pythonosc.udp_client import SimpleUDPClient
+    data = await request.json()
+    message = str(data.get('message', 'Shocking VRChat test ⚡'))
+    host = str(data.get('target_host', SETTINGS.get('chatbox', {}).get('target_host', '127.0.0.1')))
+    port = int(data.get('target_port', SETTINGS.get('chatbox', {}).get('target_port', 9000)))
+    try:
+        client = SimpleUDPClient(host, port)
+        client.send_message('/chatbox/input', [message, True, False])
+        return {'success': True, 'message': message}
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
 
 # --- Auto Update ---
 _update_cache: dict = {}
@@ -2469,6 +2533,86 @@ async def wshandler(connection):
     client = DGConnection(connection, SETTINGS=SETTINGS)
     await client.serve()
 
+# --- Chatbox OSC sender ---
+_chatbox_task = None
+_chatbox_stop = False
+
+async def _chatbox_sender_loop():
+    """Background task: periodically send chatbox message to VRChat via OSC."""
+    from pythonosc.udp_client import SimpleUDPClient
+    global _chatbox_stop
+    _chatbox_stop = False
+    logger.info("[chatbox] Sender started")
+    client = None
+    last_host = None
+    last_port = None
+    while not _chatbox_stop:
+        try:
+            cfg = SETTINGS.get('chatbox', {})
+            if not cfg.get('enabled', False):
+                await asyncio.sleep(1)
+                continue
+            host = cfg.get('target_host', '127.0.0.1')
+            port = int(cfg.get('target_port', 9000))
+            interval = max(0.5, float(cfg.get('interval_seconds', 3.0)))
+            template = cfg.get('message_template', '')
+            send_now = cfg.get('send_notification', True)
+            sfx = cfg.get('trigger_sfx', False)
+            
+            if client is None or host != last_host or port != last_port:
+                client = SimpleUDPClient(host, port)
+                last_host = host
+                last_port = port
+            
+            # Gather template variables
+            strength_a = SETTINGS_BASIC.get('dglab3', {}).get('channel_a', {}).get('strength_limit', 0)
+            strength_b = SETTINGS_BASIC.get('dglab3', {}).get('channel_b', {}).get('strength_limit', 0)
+            mode_a = SETTINGS_BASIC.get('dglab3', {}).get('channel_a', {}).get('mode', 'distance')
+            mode_b = SETTINGS_BASIC.get('dglab3', {}).get('channel_b', {}).get('mode', 'distance')
+            device_count = len(srv.CONNECTIONS)
+            
+            variables = {
+                'strength_a': strength_a,
+                'strength_b': strength_b,
+                'strength_limit_a': strength_a,
+                'strength_limit_b': strength_b,
+                'mode_a': mode_a,
+                'mode_b': mode_b,
+                'device_count': device_count,
+                'app_version': APP_VERSION,
+            }
+            try:
+                message = template.format(**variables)
+            except (KeyError, ValueError, IndexError) as e:
+                message = f'[template error: {e}]'
+            
+            if message.strip():
+                try:
+                    client.send_message('/chatbox/input', [message, send_now, sfx])
+                except Exception as e:
+                    logger.warning(f"[chatbox] OSC send failed: {e}")
+            
+            await asyncio.sleep(interval)
+        except asyncio.CancelledError:
+            break
+        except Exception as e:
+            logger.error(f"[chatbox] Sender error: {e}")
+            await asyncio.sleep(3)
+    logger.info("[chatbox] Sender stopped")
+
+def _start_chatbox_sender():
+    global _chatbox_task
+    if _chatbox_task and not _chatbox_task.done():
+        return
+    _chatbox_task = asyncio.ensure_future(_chatbox_sender_loop())
+
+def _stop_chatbox_sender():
+    global _chatbox_stop, _chatbox_task
+    _chatbox_stop = True
+    if _chatbox_task and not _chatbox_task.done():
+        _chatbox_task.cancel()
+    _chatbox_task = None
+
 # --- Engine ---
 class Engine:
     """Data processing engine: OSC listener, WebSocket server, command queue, handlers.
@@ -2670,6 +2814,9 @@ async def on_startup():
     """Start the engine and config watcher when Uvicorn's event loop is ready."""
     await engine.start()
     asyncio.create_task(config_hot_reload_loop())
+    # Start chatbox sender if enabled
+    if SETTINGS.get('chatbox', {}).get('enabled', False):
+        _start_chatbox_sender()
 
 # --- Config save ---
 def config_save():
