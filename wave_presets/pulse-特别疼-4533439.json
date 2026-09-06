@@ -1,0 +1,134 @@
+{
+  "name": "pulse-特别疼-4533439",
+  "source_file": "pulse-特别疼-4533439.pulse",
+  "num_ops": 26,
+  "header": {
+    "rest_ticks": 0,
+    "speed": 1,
+    "param3": 16,
+    "raw": "0,1,16"
+  },
+  "preview_sections": [
+    {
+      "freq_low": 78,
+      "freq_high": 64,
+      "freq_mode": 1,
+      "duration": 8,
+      "n_points": 4,
+      "repeats": 2,
+      "points": [
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 20,
+      "freq_mode": 3,
+      "duration": 8,
+      "n_points": 8,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 20,
+      "freq_mode": 1,
+      "duration": 8,
+      "n_points": 10,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        }
+      ]
+    }
+  ],
+  "wavestrs": [
+    "[\"F0F0F0F064646464\",\"F0F0F0F064646464\",\"F0F0F0F064646464\",\"F0F0F0F064646464\",\"F0F0F0F064646464\",\"F0F0F0F064646464\",\"F0F0F0F064646464\",\"F0F0F0F064646464\",\"0A0A0A0A64646464\",\"0D0D0D0D64646464\",\"1010101064646464\",\"1313131364646464\",\"1515151564646464\",\"1818181864646464\",\"1B1B1B1B64646464\",\"1E1E1E1E64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A32323232\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A32323232\",\"0A0A0A0A64646464\",\"0A0A0A0A43434343\",\"0A0A0A0A21212121\",\"0A0A0A0A00000000\",\"0A0A0A0A64646464\"]"
+  ]
+}

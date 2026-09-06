@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shocking VRChat - 参数映射一览</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1321; color: #eef3ff; min-height: 100vh; padding: 24px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.header h1 { font-size: 1.4em; }
+.header a { color: #63b3ff; text-decoration: none; font-size: 0.9em; }
+.channels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1100px; }
+.channel-card { background: #151d31; border: 1px solid #2a3960; border-radius: 16px; padding: 20px; }
+.channel-card h2 { font-size: 1.1em; margin-bottom: 4px; }
+.channel-meta { font-size: 0.82em; color: #666; margin-bottom: 16px; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 0.75em; color: #555; padding: 6px 8px; border-bottom: 1px solid #1a2540; }
+td { padding: 8px; font-size: 0.85em; border-bottom: 1px solid #111a2e; }
+td.path { font-family: Consolas, monospace; color: #bfccec; word-break: break-all; }
+.mode-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.78em; font-weight: 600; }
+.mode-distance { background: #1a3a5a; color: #63b3ff; }
+.mode-shock { background: #3a1a1a; color: #ff8b8b; }
+.mode-touch { background: #1a3a2a; color: #72e08f; }
+.mode-combo { background: #3a2a1a; color: #f6c760; }
+.mode-boost { background: #2a1a3a; color: #c49fff; }
+.empty { color: #444; font-style: italic; padding: 16px; text-align: center; }
+@media (max-width: 720px) { .channels { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🗂 参数映射一览</h1>
+  <a href="/dashboard">← 返回 Dashboard</a>
+</div>
+<div class="channels" id="channels"></div>
+
+<script>
+const MODE_LABELS = {
+  distance: '强度曲线',
+  shock: '电击',
+  touch: '触摸',
+  combo: '组合',
+  boost: '强度增减',
+};
+
+async function load() {
+  const resp = await fetch('/api/v1/config');
+  const data = await resp.json();
+  const basic = data.basic?.dglab3 || {};
+  const container = document.getElementById('channels');
+
+  ['channel_a', 'channel_b'].forEach(chKey => {
+    const ch = basic[chKey] || {};
+    const label = chKey.replace('channel_', '').toUpperCase();
+    const params = ch.avatar_params || [];
+    const defaultMode = ch.mode || 'distance';
+    const strengthLimit = ch.strength_limit || 100;
+
+    let rows = '';
+    if (params.length === 0) {
+      rows = '<tr><td colspan="2" class="empty">未配置参数</td></tr>';
+    } else {
+      params.forEach(p => {
+        const path = typeof p === 'string' ? p : p.path;
+        const mode = typeof p === 'string' ? defaultMode : (p.mode || defaultMode);
+        const modeLabel = MODE_LABELS[mode] || mode;
+        rows += `<tr><td class="path">${path}</td><td><span class="mode-badge mode-${mode}">${modeLabel}</span></td></tr>`;
+      });
+    }
+
+    container.innerHTML += `
+      <div class="channel-card">
+        <h2>Channel ${label}</h2>
+        <div class="channel-meta">默认模式: ${MODE_LABELS[defaultMode] || defaultMode} · 强度上限: ${strengthLimit}</div>
+        <table>
+          <thead><tr><th>OSC 参数路径</th><th>模式</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  });
+}
+
+load();
+</script>
+</body>
+</html>

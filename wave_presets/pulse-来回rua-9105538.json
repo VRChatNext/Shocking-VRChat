@@ -1,0 +1,398 @@
+{
+  "name": "pulse-来回rua-9105538",
+  "source_file": "pulse-来回rua-9105538.pulse",
+  "num_ops": 70,
+  "header": {
+    "rest_ticks": 99,
+    "speed": 4,
+    "param3": 8,
+    "raw": "99,4,8"
+  },
+  "preview_sections": [
+    {
+      "freq_low": 0,
+      "freq_high": 0,
+      "freq_mode": 1,
+      "duration": 14,
+      "n_points": 28,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 2,
+          "anchor": false
+        },
+        {
+          "strength": 4,
+          "anchor": false
+        },
+        {
+          "strength": 7,
+          "anchor": false
+        },
+        {
+          "strength": 9,
+          "anchor": false
+        },
+        {
+          "strength": 11,
+          "anchor": false
+        },
+        {
+          "strength": 13,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": false
+        },
+        {
+          "strength": 17,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": false
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 24,
+          "anchor": false
+        },
+        {
+          "strength": 26,
+          "anchor": false
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": false
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 37,
+          "anchor": false
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 41,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 46,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 54,
+          "anchor": false
+        },
+        {
+          "strength": 56,
+          "anchor": false
+        },
+        {
+          "strength": 59,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 54,
+      "freq_mode": 1,
+      "duration": 92,
+      "n_points": 30,
+      "repeats": 4,
+      "points": [
+        {
+          "strength": 59,
+          "anchor": true
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 65,
+          "anchor": false
+        },
+        {
+          "strength": 69,
+          "anchor": false
+        },
+        {
+          "strength": 72,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": false
+        },
+        {
+          "strength": 78,
+          "anchor": false
+        },
+        {
+          "strength": 81,
+          "anchor": false
+        },
+        {
+          "strength": 84,
+          "anchor": false
+        },
+        {
+          "strength": 87,
+          "anchor": false
+        },
+        {
+          "strength": 91,
+          "anchor": false
+        },
+        {
+          "strength": 94,
+          "anchor": false
+        },
+        {
+          "strength": 97,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 98,
+          "anchor": false
+        },
+        {
+          "strength": 95,
+          "anchor": false
+        },
+        {
+          "strength": 93,
+          "anchor": false
+        },
+        {
+          "strength": 90,
+          "anchor": false
+        },
+        {
+          "strength": 88,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": false
+        },
+        {
+          "strength": 83,
+          "anchor": false
+        },
+        {
+          "strength": 81,
+          "anchor": false
+        },
+        {
+          "strength": 78,
+          "anchor": false
+        },
+        {
+          "strength": 76,
+          "anchor": false
+        },
+        {
+          "strength": 73,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 68,
+          "anchor": false
+        },
+        {
+          "strength": 66,
+          "anchor": false
+        },
+        {
+          "strength": 64,
+          "anchor": false
+        },
+        {
+          "strength": 61,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 20,
+      "freq_mode": 1,
+      "duration": 3,
+      "n_points": 30,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 59,
+          "anchor": true
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 53,
+          "anchor": false
+        },
+        {
+          "strength": 51,
+          "anchor": false
+        },
+        {
+          "strength": 49,
+          "anchor": false
+        },
+        {
+          "strength": 47,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 41,
+          "anchor": false
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 37,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 31,
+          "anchor": false
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 27,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 23,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": false
+        },
+        {
+          "strength": 18,
+          "anchor": false
+        },
+        {
+          "strength": 16,
+          "anchor": false
+        },
+        {
+          "strength": 14,
+          "anchor": false
+        },
+        {
+          "strength": 12,
+          "anchor": false
+        },
+        {
+          "strength": 10,
+          "anchor": false
+        },
+        {
+          "strength": 8,
+          "anchor": false
+        },
+        {
+          "strength": 6,
+          "anchor": false
+        },
+        {
+          "strength": 4,
+          "anchor": false
+        },
+        {
+          "strength": 2,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        }
+      ]
+    }
+  ],
+  "wavestrs": [
+    "[\"0A0A0A0A00020407\",\"0A0A0A0A090B0D0F\",\"0A0A0A0A11141618\",\"0A0A0A0A1A1C1E21\",\"0A0A0A0A23252729\",\"0A0A0A0A2B2E3032\",\"0A0A0A0A3436383B\",\"0A0A0A0A3B3E4145\",\"0A0A0A0A484B4E51\",\"0A0A0A0A54575B5E\",\"0A0A0A0A6164625F\",\"0A0A0A0A5D5A5855\",\"0A0A0A0A53514E4C\",\"0A0A0A0A49474442\",\"0A0A0A0A403D3B3E\",\"0A0A0A0A4145484B\",\"0A0A0A0A4E515457\",\"0A0A0A0A5B5E6164\",\"0A0A0A0A625F5D5A\",\"0A0A0A0A58555351\",\"0A0A0A0A4E4C4947\",\"0A0A0A0A4442403D\",\"0A0A0A0A3B3E4145\",\"0A0A0A0A484B4E51\",\"0A0A0A0A54575B5E\",\"0A0A0A0A6164625F\",\"0A0A0A0A5D5A5855\",\"0A0A0A0A53514E4C\",\"0A0A0A0A49474442\",\"0A0A0A0A403D3B3E\",\"0A0A0A0A4145484B\",\"0A0A0A0A4E515457\",\"0A0A0A0A5B5E6164\",\"0A0A0A0A625F5D5A\",\"0A0A0A0A58555351\",\"0A0A0A0A4E4C4947\",\"0A0A0A0A4442403D\",\"0A0A0A0A3B393735\",\"0A0A0A0A33312F2D\",\"0A0A0A0A2B292725\",\"0A0A0A0A23211F1D\",\"0A0A0A0A1B191714\",\"0A0A0A0A12100E0C\",\"0A0A0A0A0A080604\",\"0A0A0A0A02000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\"]"
+  ]
+}

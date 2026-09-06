@@ -1,0 +1,402 @@
+{
+  "name": "pulse-压住你❤️-9066830",
+  "source_file": "pulse-压住你❤️-9066830.pulse",
+  "num_ops": 90,
+  "header": null,
+  "preview_sections": [
+    {
+      "freq_low": 0,
+      "freq_high": 0,
+      "freq_mode": 1,
+      "duration": 0,
+      "n_points": 30,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 14,
+          "anchor": false
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 86,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 17,
+          "anchor": false
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 83,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 14,
+          "anchor": false
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 86,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 54,
+      "freq_mode": 1,
+      "duration": 3,
+      "n_points": 30,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 1,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 20,
+      "freq_mode": 1,
+      "duration": 3,
+      "n_points": 30,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 14,
+          "anchor": false
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 86,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 86,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 14,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 14,
+          "anchor": false
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 86,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 83,
+          "anchor": false
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 17,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        }
+      ]
+    }
+  ],
+  "wavestrs": [
+    "[\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A0E0E0E0E\",\"0A0A0A0A1D1D1D1D\",\"0A0A0A0A2B2B2B2B\",\"0A0A0A0A39393939\",\"0A0A0A0A47474747\",\"0A0A0A0A56565656\",\"0A0A0A0A64646464\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A11111111\",\"0A0A0A0A21212121\",\"0A0A0A0A32323232\",\"0A0A0A0A43434343\",\"0A0A0A0A53535353\",\"0A0A0A0A64646464\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A0E0E0E0E\",\"0A0A0A0A1D1D1D1D\",\"0A0A0A0A2B2B2B2B\",\"0A0A0A0A39393939\",\"0A0A0A0A47474747\",\"0A0A0A0A56565656\",\"0A0A0A0A64646464\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A19191919\",\"0A0A0A0A32323232\",\"0A0A0A0A4B4B4B4B\",\"0A0A0A0A64646464\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A19191919\",\"0A0A0A0A32323232\",\"0A0A0A0A4B4B4B4B\",\"0A0A0A0A64646464\",\"0A0A0A0A00000000\",\"0A0A0A0A01010101\",\"0A0A0A0A00000000\",\"0A0A0A0A19191919\",\"0A0A0A0A32323232\",\"0A0A0A0A4B4B4B4B\",\"0A0A0A0A64646464\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A19191919\",\"0A0A0A0A32323232\",\"0A0A0A0A4B4B4B4B\",\"0A0A0A0A64646464\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A0E0E0E0E\",\"0A0A0A0A1D1D1D1D\",\"0A0A0A0A2B2B2B2B\",\"0A0A0A0A39393939\",\"0A0A0A0A47474747\",\"0A0A0A0A56565656\",\"0A0A0A0A64646464\",\"0A0A0A0A56565656\",\"0A0A0A0A47474747\",\"0A0A0A0A39393939\",\"0A0A0A0A2B2B2B2B\",\"0A0A0A0A1D1D1D1D\",\"0A0A0A0A0E0E0E0E\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A00000000\",\"0A0A0A0A0E0E0E0E\",\"0A0A0A0A1D1D1D1D\",\"0A0A0A0A2B2B2B2B\",\"0A0A0A0A39393939\",\"0A0A0A0A47474747\",\"0A0A0A0A56565656\",\"0A0A0A0A64646464\",\"0A0A0A0A53535353\",\"0A0A0A0A43434343\"]",
+    "[\"0A0A0A0A32323232\",\"0A0A0A0A21212121\",\"0A0A0A0A11111111\",\"0A0A0A0A00000000\"]"
+  ]
+}

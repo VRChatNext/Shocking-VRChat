@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shocking VRChat Dashboard</title>
+<style>
+:root {
+  --bg: #0d1321;
+  --panel: #151d31;
+  --panel-2: #1d2944;
+  --line: #2a3960;
+  --text: #eef3ff;
+  --muted: #95a4c7;
+  --accent: #ff6b6b;
+  --green: #72e08f;
+  --blue: #63b3ff;
+  --amber: #f6c760;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(99, 179, 255, 0.14), transparent 28%),
+    radial-gradient(circle at top left, rgba(255, 107, 107, 0.12), transparent 24%),
+    linear-gradient(180deg, #0c1220, #0d1321 48%, #0b111d);
+  color: var(--text);
+  min-height: 100vh;
+}
+.shell {
+  width: min(1200px, calc(100% - 24px));
+  margin: 0 auto;
+  padding: 24px 0 40px;
+}
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 42px);
+  letter-spacing: 0.02em;
+}
+.hero p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--muted);
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c04e4e;
+  box-shadow: 0 0 14px rgba(255, 107, 107, 0.35);
+}
+.dot.online {
+  background: var(--green);
+  box-shadow: 0 0 14px rgba(114, 224, 143, 0.45);
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 16px;
+}
+.stack {
+  display: grid;
+  gap: 16px;
+}
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+}
+.card h2 {
+  margin: 0 0 14px;
+  font-size: 17px;
+}
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.channel {
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.channel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.channel-label {
+  font-size: 20px;
+  font-weight: 700;
+}
+.meter {
+  height: 16px;
+  border-radius: 999px;
+  background: #0a1020;
+  overflow: hidden;
+}
+.meter > div {
+  height: 100%;
+  width: 0%;
+  transition: width 180ms linear;
+}
+#bar-a { background: linear-gradient(90deg, #77e89d, #b0ff91); }
+#bar-b { background: linear-gradient(90deg, #66b8ff, #8be8ff); }
+.metric {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.wave-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.wave-panel {
+  padding: 12px;
+  border-radius: 16px;
+  background: #0c1323;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.wave-panel canvas {
+  display: block;
+  width: 100%;
+  height: 140px;
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)),
+    repeating-linear-gradient(
+      to right,
+      rgba(255,255,255,0.03) 0,
+      rgba(255,255,255,0.03) 1px,
+      transparent 1px,
+      transparent 18px
+    );
+}
+.qr-wrap {
+  display: grid;
+  gap: 12px;
+}
+.qr-frame {
+  width: 100%;
+  min-height: 320px;
+  border: 0;
+  border-radius: 16px;
+  background: #d7dce7;
+}
+.mono {
+  padding: 12px;
+  border-radius: 14px;
+  background: #0c1323;
+  border: 1px solid rgba(255,255,255,0.04);
+  color: #bfccec;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  word-break: break-all;
+}
+.form-row {
+  display: grid;
+  gap: 10px;
+}
+label {
+  font-size: 14px;
+  color: var(--muted);
+}
+select, input[type=range] {
+  width: 100%;
+  margin-top: 6px;
+}
+select {
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+input[type=range] {
+  accent-color: var(--accent);
+}
+.range-meta {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 13px;
+}
+.buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+button {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+}
+.btn-red { background: linear-gradient(135deg, #ff6767, #e54848); }
+.btn-green { background: linear-gradient(135deg, #4ecb74, #2fa75b); }
+.btn-blue { background: linear-gradient(135deg, #4ea0ff, #357df1); }
+.btn-gray { background: linear-gradient(135deg, #53627f, #3f4d68); }
+.log {
+  max-height: 220px;
+  overflow: auto;
+  padding: 12px;
+  border-radius: 14px;
+  background: #0c1323;
+  border: 1px solid rgba(255,255,255,0.04);
+  font-family: Consolas, monospace;
+  font-size: 12px;
+}
+.log-entry { padding: 4px 0; color: #d6e2ff; }
+.log-entry.warn { color: var(--amber); }
+.log-entry.error { color: #ff8b8b; }
+.osc-feed { max-height: 180px; overflow-y: auto; }
+.osc-entry { display: flex; gap: 8px; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-family: Consolas, monospace; align-items: center; }
+.osc-entry:nth-child(odd) { background: rgba(255,255,255,0.02); }
+.osc-ch { font-weight: 700; min-width: 18px; }
+.osc-ch.a { color: var(--green); }
+.osc-ch.b { color: var(--blue); }
+.osc-mode { color: var(--amber); min-width: 60px; font-size: 11px; }
+.osc-path { color: #bfccec; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.osc-val { color: var(--accent); min-width: 50px; text-align: right; }
+.osc-time { color: #555; min-width: 55px; font-size: 11px; }
+.status-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+.status-detail span { padding: 4px 8px; background: rgba(255,255,255,0.02); border-radius: 6px; }
+.status-detail .label { color: #666; }
+.wave-preview-wrap { position: relative; margin: 8px 0; }
+.wave-preview-wrap canvas { display: block; width: 100%; height: 80px; border-radius: 10px; background: #0a1020; border: 1px solid rgba(255,255,255,0.04); }
+.wave-preview-info { position: absolute; top: 6px; right: 10px; font-size: 11px; color: #666; }
+@media (max-width: 920px) {
+  .grid, .wave-grid, .status-grid { grid-template-columns: 1fr; }
+  .hero { flex-direction: column; align-items: start; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hero">
+    <div>
+      <h1>Shocking VRChat</h1>
+      <p>实时状态、波形观察和快速测试都放在这一页里。<a href="/curve" style="color:#63b3ff;margin-left:12px;font-size:0.85em">📈 强度曲线</a><a href="/combo" style="color:#63b3ff;margin-left:12px;font-size:0.85em">⚡ Combo</a><a href="/params" style="color:#63b3ff;margin-left:12px;font-size:0.85em">🗂 参数映射</a><a href="/recorder" style="color:#63b3ff;margin-left:12px;font-size:0.85em">🎙 录制回放</a></p>
+    </div>
+    <div class="badge">
+      <span class="dot" id="conn-dot"></span>
+      <span id="conn-text">未连接</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="stack">
+      <section class="card">
+        <h2>设备状态</h2>
+        <div class="status-grid">
+          <div class="channel">
+            <div class="channel-head">
+              <span class="channel-label">Channel A</span>
+              <strong id="val-a">0 / 0</strong>
+            </div>
+            <div class="meter"><div id="bar-a"></div></div>
+            <div class="metric" id="metric-a">当前强度: 0</div>
+          </div>
+          <div class="channel">
+            <div class="channel-head">
+              <span class="channel-label">Channel B</span>
+              <strong id="val-b">0 / 0</strong>
+            </div>
+            <div class="meter"><div id="bar-b"></div></div>
+            <div class="metric" id="metric-b">当前强度: 0</div>
+          </div>
+        </div>
+        <div class="status-detail" id="status-detail">
+          <span><span class="label">OSC: </span><span id="osc-status">监听中</span></span>
+          <span><span class="label">最近触发: </span><span id="last-trigger">-</span></span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>实时波形</h2>
+        <div class="wave-grid">
+          <div class="wave-panel">
+            <div class="metric">A 通道，柱状图显示。输入结束后会随时间滑回 0。</div>
+            <canvas id="wave-canvas-a"></canvas>
+          </div>
+          <div class="wave-panel">
+            <div class="metric">B 通道，柱状图显示。输入结束后会随时间滑回 0。</div>
+            <canvas id="wave-canvas-b"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>OSC 触发实况</h2>
+        <div class="osc-feed" id="osc-feed"></div>
+      </section>
+
+      <section class="card">
+        <h2>日志</h2>
+        <div class="log" id="log-area"></div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="card">
+        <h2>场景预设</h2>
+        <div class="form-row">
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="profile-select" style="flex:1"><option value="">-- 选择预设 --</option></select>
+            <button class="btn-green" onclick="loadProfile()" title="加载">▶</button>
+            <button class="btn-red" onclick="deleteProfile()" title="删除">✕</button>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input type="text" id="profile-name-input" placeholder="新预设名称" style="flex:1;padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:var(--panel-2);color:var(--text);font-size:14px">
+            <button class="btn-blue" onclick="saveProfile()">保存当前</button>
+          </div>
+          <div class="metric" id="profile-msg"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>连接二维码</h2>
+        <div class="qr-wrap">
+          <iframe class="qr-frame" id="qr-frame" src="/qr"></iframe>
+          <div class="mono" id="qr-text">加载中...</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>强度控制</h2>
+        <div class="form-row">
+          <label>目标通道
+            <select id="ctrl-channel">
+              <option value="A">A 通道</option>
+              <option value="B">B 通道</option>
+              <option value="all">全部通道</option>
+            </select>
+          </label>
+          <label>强度
+            <input type="range" id="strength-slider" min="0" max="100" value="0">
+          </label>
+          <div class="range-meta"><span>0</span><span id="slider-val">0</span><span>100</span></div>
+          <div class="buttons">
+            <button class="btn-red" onclick="sendStrength('set')">发送固定强度</button>
+            <button class="btn-green" onclick="sendStrength('shock')">快速 Shock</button>
+            <button class="btn-gray" onclick="sendStop()">停止输出</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>波形测试</h2>
+        <div class="form-row">
+          <label>波形预设
+            <select id="wave-select" onchange="previewWave()"></select>
+          </label>
+          <div class="wave-preview-wrap">
+            <canvas id="wave-preview-canvas"></canvas>
+            <div class="wave-preview-info" id="wave-preview-info"></div>
+          </div>
+          <label>持续时间
+            <input type="range" id="wave-duration" min="1" max="10" value="3">
+          </label>
+          <div class="range-meta"><span>1s</span><span id="duration-val">3s</span><span>10s</span></div>
+          <div class="buttons">
+            <button class="btn-blue" onclick="sendWave()">发送预设</button>
+            <button class="btn-green" onclick="quickTest()">试一下 (1s)</button>
+            <button class="btn-gray" onclick="clearWave()">清空队列</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE = window.location.origin;
+
+async function loadProfiles() {
+  try {
+    const resp = await fetch(API_BASE + "/api/v1/profiles");
+    const data = await resp.json();
+    const sel = document.getElementById("profile-select");
+    const current = sel.value;
+    sel.innerHTML = '<option value="">-- 选择预设 --</option>';
+    (data.profiles || []).forEach(name => {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+    if (current) sel.value = current;
+  } catch (e) {}
+}
+
+async function saveProfile() {
+  const name = document.getElementById("profile-name-input").value.trim();
+  if (!name) { profileMsg("请输入预设名称", true); return; }
+  try {
+    const resp = await fetch(API_BASE + "/api/v1/profiles/" + encodeURIComponent(name), { method: "PUT" });
+    const data = await resp.json();
+    if (data.success) {
+      profileMsg("已保存: " + data.name);
+      document.getElementById("profile-name-input").value = "";
+      loadProfiles();
+    } else { profileMsg(data.message || "保存失败", true); }
+  } catch (e) { profileMsg("请求失败", true); }
+}
+
+async function loadProfile() {
+  const name = document.getElementById("profile-select").value;
+  if (!name) { profileMsg("请先选择预设", true); return; }
+  try {
+    const resp = await fetch(API_BASE + "/api/v1/profiles/" + encodeURIComponent(name), { method: "POST" });
+    const data = await resp.json();
+    if (data.success) { profileMsg("已加载: " + name); addLog("切换预设: " + name); }
+    else { profileMsg(data.message || "加载失败", true); }
+  } catch (e) { profileMsg("请求失败", true); }
+}
+
+async function deleteProfile() {
+  const name = document.getElementById("profile-select").value;
+  if (!name) { profileMsg("请先选择预设", true); return; }
+  if (!confirm("确定删除预设 \"" + name + "\"？")) return;
+  try {
+    const resp = await fetch(API_BASE + "/api/v1/profiles/" + encodeURIComponent(name), { method: "DELETE" });
+    const data = await resp.json();
+    if (data.success) { profileMsg("已删除"); loadProfiles(); }
+    else { profileMsg(data.message || "删除失败", true); }
+  } catch (e) { profileMsg("请求失败", true); }
+}
+
+function profileMsg(msg, isErr) {
+  const el = document.getElementById("profile-msg");
+  el.textContent = msg;
+  el.style.color = isErr ? "#ff8b8b" : "var(--green)";
+  setTimeout(() => { el.textContent = ""; }, 3000);
+}
+
+async function pollStatus() {
+  try {
+    const resp = await fetch(API_BASE + "/api/v1/status");
+    const data = await resp.json();
+    const devices = data.devices || [];
+    const dot = document.getElementById("conn-dot");
+    const text = document.getElementById("conn-text");
+    if (devices.length > 0) {
+      dot.classList.add("online");
+      text.textContent = "已连接 " + devices.length + " 台设备";
+      const dev = devices[0];
+      const str = dev.attr?.strength || {A: 0, B: 0};
+      const max = dev.attr?.strength_max || {A: 0, B: 0};
+      const limit = dev.attr?.strength_limit || {A: 100, B: 100};
+      updateBars(str, max, limit);
+    } else {
+      dot.classList.remove("online");
+      text.textContent = "等待郊狼 APP 连接...";
+      updateBars({A: 0, B: 0}, {A: 0, B: 0}, {A: 100, B: 100});
+    }
+    // OSC status
+    document.getElementById("osc-status").textContent = data.osc_listening || "-";
+    if (data.last_osc_time) {
+      const ago = Math.round((Date.now() / 1000) - data.last_osc_time);
+      document.getElementById("last-trigger").textContent = ago < 2 ? "刚刚" : ago + "s 前";
+    } else {
+      document.getElementById("last-trigger").textContent = "无数据";
+    }
+  } catch (e) {
+    document.getElementById("conn-dot").classList.remove("online");
+    document.getElementById("conn-text").textContent = "服务不可用";
+  }
+}
+
+function updateBars(strength, max, limit) {
+  const a = Number(strength?.A || 0);
+  const b = Number(strength?.B || 0);
+  const aLimit = Math.min(Number(max?.A || 0), Number(limit?.A || 100));
+  const bLimit = Math.min(Number(max?.B || 0), Number(limit?.B || 100));
+  document.getElementById("bar-a").style.width = (aLimit > 0 ? Math.min(a / aLimit * 100, 100) : 0) + "%";
+  document.getElementById("bar-b").style.width = (bLimit > 0 ? Math.min(b / bLimit * 100, 100) : 0) + "%";
+  document.getElementById("val-a").textContent = a + " / " + aLimit;
+  document.getElementById("val-b").textContent = b + " / " + bLimit;
+  document.getElementById("metric-a").textContent = "强度: " + a + " / 上限: " + aLimit;
+  document.getElementById("metric-b").textContent = "强度: " + b + " / 上限: " + bLimit;
+}
+
+let _lastOscEventTime = 0;
+async function pollOscActivity() {
+  try {
+    const resp = await fetch(API_BASE + "/api/v1/osc_activity");
+    const data = await resp.json();
+    const events = data.events || [];
+    if (!events.length) return;
+    // Only render if there are new events
+    if (events[0].time <= _lastOscEventTime) return;
+    _lastOscEventTime = events[0].time;
+    const feed = document.getElementById("osc-feed");
+    feed.innerHTML = events.slice(0, 30).map(e => {
+      const t = new Date(e.time * 1000);
+      const timeStr = t.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+      const chClass = e.channel === 'A' ? 'a' : 'b';
+      const shortPath = e.address.replace('/avatar/parameters/', '.../');
+      return `<div class="osc-entry"><span class="osc-ch ${chClass}">${e.channel}</span><span class="osc-mode">${e.mode}</span><span class="osc-path" title="${e.address}">${shortPath}</span><span class="osc-val">${e.value}</span><span class="osc-time">${timeStr}</span></div>`;
+    }).join('');
+  } catch (e) {}
+}
+
+async function apiFetch(path) {
+  try {
+    const resp = await fetch(API_BASE + path, {
+      headers: {"User-Agent": "UnityPlayer/2022.3.22f1-DWR (UnityWebRequest/1.0, libcurl/8.5.0-DEV)"}
+    });
+    if (!resp.ok) addLog("API 错误: " + resp.status, "error");
+  } catch (e) {
+    addLog("请求失败: " + e.message, "error");
+  }
+}
+
+function addLog(msg, level = "") {
+  const area = document.getElementById("log-area");
+  const entry = document.createElement("div");
+  entry.className = "log-entry " + level;
+  entry.textContent = "[" + new Date().toLocaleTimeString() + "] " + msg;
+  area.prepend(entry);
+  if (area.children.length > 120) area.lastChild.remove();
+}
+
+function sendStrength(mode) {
+  const channel = document.getElementById("ctrl-channel").value;
+  const val = document.getElementById("strength-slider").value;
+  if (mode === "shock") {
+    const duration = parseFloat(val) / 20 || 1;
+    apiFetch("/api/v1/shock/" + channel + "/" + Math.min(duration, 5));
+    addLog("Shock " + channel + " 持续 " + duration.toFixed(1) + "s");
+    return;
+  }
+  const channels = channel === "all" ? ["A", "B"] : [channel];
+  const strengthHex = Math.min(parseInt(val, 10), 100).toString(16).padStart(2, "0").toUpperCase();
+  const wavedata = "0A0A0A0A" + strengthHex + strengthHex + strengthHex + strengthHex;
+  channels.forEach(ch => apiFetch("/api/v1/sendwave/" + ch + "/10/" + wavedata));
+  addLog("发送固定强度到 " + channel + ": " + val);
+}
+
+function sendStop() {
+  const channel = document.getElementById("ctrl-channel").value;
+  const channels = channel === "all" ? ["A", "B"] : [channel];
+  channels.forEach((ch) => apiFetch("/api/v1/sendwave/" + ch + "/10/0A0A0A0A00000000"));
+  addLog("停止输出");
+}
+
+async function loadWavePresets() {
+  try {
+    const resp = await fetch(API_BASE + "/api/v1/wave_presets");
+    const data = await resp.json();
+    const sel = document.getElementById("wave-select");
+    sel.innerHTML = "";
+    (data.presets || []).forEach((name) => {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name.replace(/^pulse-/, "").replace(/-\d+$/, "");
+      sel.appendChild(opt);
+    });
+    if (sel.options.length > 0) previewWave();
+  } catch (e) {
+    addLog("无法加载波形预设", "warn");
+  }
+}
+
+function sendWave() {
+  const channel = document.getElementById("ctrl-channel").value;
+  const preset = document.getElementById("wave-select").value;
+  const duration = document.getElementById("wave-duration").value;
+  if (!preset) {
+    addLog("请先选择波形预设", "warn");
+    return;
+  }
+  const channels = channel === "all" ? ["A", "B"] : [channel];
+  channels.forEach((ch) => apiFetch("/api/v1/wave_preset/" + ch + "/" + encodeURIComponent(preset) + "/" + duration));
+  addLog("发送预设 " + preset + " 到 " + channel + "，持续 " + duration + "s");
+}
+
+function quickTest() {
+  const channel = document.getElementById("ctrl-channel").value;
+  const preset = document.getElementById("wave-select").value;
+  if (!preset) { addLog("请先选择波形预设", "warn"); return; }
+  const channels = channel === "all" ? ["A", "B"] : [channel];
+  channels.forEach((ch) => apiFetch("/api/v1/wave_preset/" + ch + "/" + encodeURIComponent(preset) + "/1"));
+  addLog("快速测试 " + preset + " → " + channel + " (1s)");
+}
+
+async function previewWave() {
+  const preset = document.getElementById("wave-select").value;
+  const canvas = document.getElementById("wave-preview-canvas");
+  const info = document.getElementById("wave-preview-info");
+  const ctx = canvas.getContext("2d");
+  const ratio = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  canvas.width = w * ratio;
+  canvas.height = h * ratio;
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  if (!preset) { info.textContent = ""; return; }
+  try {
+    const resp = await fetch(API_BASE + "/api/v1/wave_presets/" + encodeURIComponent(preset) + "/preview");
+    const data = await resp.json();
+    if (data.error) { info.textContent = "不可用"; return; }
+    const samples = data.strength_samples || [];
+    if (!samples.length) { info.textContent = "无数据"; return; }
+    info.textContent = data.ops_count + " ops · " + (data.duration_ms / 1000).toFixed(1) + "s";
+    // Draw waveform
+    const padding = 4;
+    const drawW = w - padding * 2;
+    const drawH = h - padding * 2;
+    // Fill area
+    ctx.beginPath();
+    ctx.moveTo(padding, h - padding);
+    samples.forEach((s, i) => {
+      const x = padding + (i / (samples.length - 1)) * drawW;
+      const y = (h - padding) - s * drawH;
+      ctx.lineTo(x, y);
+    });
+    ctx.lineTo(padding + drawW, h - padding);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(99, 179, 255, 0.15)";
+    ctx.fill();
+    // Draw line
+    ctx.beginPath();
+    samples.forEach((s, i) => {
+      const x = padding + (i / (samples.length - 1)) * drawW;
+      const y = (h - padding) - s * drawH;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = "#63b3ff";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  } catch (e) { info.textContent = "加载失败"; }
+}
+
+function clearWave() {
+  const channel = document.getElementById("ctrl-channel").value;
+  const channels = channel === "all" ? ["A", "B"] : [channel];
+  channels.forEach((ch) => apiFetch("/api/v1/sendwave/" + ch + "/1/0A0A0A0A00000000"));
+  addLog("清空波形");
+}
+
+function drawBars(canvasId, samples, color) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext("2d");
+  const ratio = window.devicePixelRatio || 1;
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  canvas.width = width * ratio;
+  canvas.height = height * ratio;
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  ctx.clearRect(0, 0, width, height);
+
+  const bars = (samples || []).slice(-48);
+  if (!bars.length) return;
+
+  const gap = 3;
+  const barWidth = Math.max(3, (width - gap * (bars.length - 1)) / bars.length);
+  ctx.fillStyle = color;
+  bars.forEach((sample, index) => {
+    const clamped = Math.max(0, Math.min(100, Number(sample) || 0));
+    const barHeight = (clamped / 100) * (height - 10);
+    const x = index * (barWidth + gap);
+    const y = height - barHeight;
+    ctx.globalAlpha = 0.35 + clamped / 150;
+    ctx.fillRect(x, y, barWidth, barHeight);
+  });
+  ctx.globalAlpha = 1;
+}
+
+async function pollWaveHistory() {
+  try {
+    const resp = await fetch(API_BASE + "/api/v1/wave_history");
+    const data = await resp.json();
+    drawBars("wave-canvas-a", data.A, "#8ef0a8");
+    drawBars("wave-canvas-b", data.B, "#7cc8ff");
+  } catch (e) {
+  }
+}
+
+async function loadQrPanel() {
+  try {
+    const resp = await fetch(API_BASE + "/api/v1/qr_payload");
+    const data = await resp.json();
+    document.getElementById("qr-text").textContent = data.content || "二维码内容不可用";
+  } catch (e) {
+    document.getElementById("qr-text").textContent = "二维码内容加载失败";
+  }
+}
+
+document.getElementById("strength-slider").oninput = function () {
+  document.getElementById("slider-val").textContent = this.value;
+};
+
+document.getElementById("wave-duration").oninput = function () {
+  document.getElementById("duration-val").textContent = this.value + "s";
+};
+
+window.addEventListener("resize", () => {
+  pollWaveHistory();
+});
+
+pollStatus();
+pollWaveHistory();
+pollOscActivity();
+loadWavePresets();
+loadProfiles();
+loadQrPanel();
+setInterval(pollStatus, 2000);
+setInterval(pollWaveHistory, 250);
+setInterval(pollOscActivity, 500);
+addLog("仪表盘已加载");
+</script>
+</body>
+</html>

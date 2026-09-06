@@ -1,0 +1,238 @@
+{
+  "name": "pulse-舔舔咬咬-9045118",
+  "source_file": "pulse-舔舔咬咬-9045118.pulse",
+  "num_ops": 128,
+  "header": null,
+  "preview_sections": [
+    {
+      "freq_low": 0,
+      "freq_high": 0,
+      "freq_mode": 1,
+      "duration": 49,
+      "n_points": 17,
+      "repeats": 3,
+      "points": [
+        {
+          "strength": 34,
+          "anchor": true
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 72,
+          "anchor": false
+        },
+        {
+          "strength": 81,
+          "anchor": false
+        },
+        {
+          "strength": 90,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 93,
+          "anchor": false
+        },
+        {
+          "strength": 86,
+          "anchor": false
+        },
+        {
+          "strength": 78,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 64,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 49,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 54,
+      "freq_mode": 1,
+      "duration": 36,
+      "n_points": 19,
+      "repeats": 2,
+      "points": [
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 94,
+          "anchor": false
+        },
+        {
+          "strength": 89,
+          "anchor": false
+        },
+        {
+          "strength": 83,
+          "anchor": false
+        },
+        {
+          "strength": 78,
+          "anchor": false
+        },
+        {
+          "strength": 72,
+          "anchor": false
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 61,
+          "anchor": false
+        },
+        {
+          "strength": 56,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 44,
+          "anchor": false
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 17,
+          "anchor": false
+        },
+        {
+          "strength": 11,
+          "anchor": false
+        },
+        {
+          "strength": 6,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 20,
+      "freq_mode": 1,
+      "duration": 38,
+      "n_points": 13,
+      "repeats": 3,
+      "points": [
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        }
+      ]
+    }
+  ],
+  "wavestrs": [
+    "[\"0A0A0A0A22222222\",\"0A0A0A0A2B2B2B2B\",\"0A0A0A0A34343434\",\"0A0A0A0A3E3E3E3E\",\"0A0A0A0A48484848\",\"0A0A0A0A51515151\",\"0A0A0A0A5A5A5A5A\",\"0A0A0A0A64646464\",\"0A0A0A0A5D5D5D5D\",\"0A0A0A0A56565656\",\"0A0A0A0A4E4E4E4E\",\"0A0A0A0A47474747\",\"0A0A0A0A40404040\",\"0A0A0A0A39393939\",\"0A0A0A0A31313131\",\"0A0A0A0A2A2A2A2A\",\"0A0A0A0A23232323\",\"0A0A0A0A22222222\",\"0A0A0A0A2B2B2B2B\",\"0A0A0A0A34343434\",\"0A0A0A0A3E3E3E3E\",\"0A0A0A0A48484848\",\"0A0A0A0A51515151\",\"0A0A0A0A5A5A5A5A\",\"0A0A0A0A64646464\",\"0A0A0A0A5D5D5D5D\",\"0A0A0A0A56565656\",\"0A0A0A0A4E4E4E4E\",\"0A0A0A0A47474747\",\"0A0A0A0A40404040\",\"0A0A0A0A39393939\",\"0A0A0A0A31313131\",\"0A0A0A0A2A2A2A2A\",\"0A0A0A0A23232323\",\"0A0A0A0A22222222\",\"0A0A0A0A2B2B2B2B\",\"0A0A0A0A34343434\",\"0A0A0A0A3E3E3E3E\",\"0A0A0A0A48484848\",\"0A0A0A0A51515151\",\"0A0A0A0A5A5A5A5A\",\"0A0A0A0A64646464\",\"0A0A0A0A5D5D5D5D\",\"0A0A0A0A56565656\",\"0A0A0A0A4E4E4E4E\",\"0A0A0A0A47474747\",\"0A0A0A0A40404040\",\"0A0A0A0A39393939\",\"0A0A0A0A31313131\",\"0A0A0A0A2A2A2A2A\",\"0A0A0A0A23232323\",\"0A0A0A0A64646464\",\"0A0A0A0A5E5E5E5E\",\"0A0A0A0A59595959\",\"0A0A0A0A53535353\",\"0A0A0A0A4E4E4E4E\",\"0A0A0A0A48484848\",\"0A0A0A0A43434343\",\"0A0A0A0A3D3D3D3D\",\"0A0A0A0A38383838\",\"0A0A0A0A32323232\",\"0A0A0A0A2C2C2C2C\",\"0A0A0A0A27272727\",\"0A0A0A0A21212121\",\"0A0A0A0A1C1C1C1C\",\"0A0A0A0A16161616\",\"0A0A0A0A11111111\",\"0A0A0A0A0B0B0B0B\",\"0A0A0A0A06060606\",\"0A0A0A0A00000000\",\"0A0A0A0A64646464\",\"0A0A0A0A5E5E5E5E\",\"0A0A0A0A59595959\",\"0A0A0A0A53535353\",\"0A0A0A0A4E4E4E4E\",\"0A0A0A0A48484848\",\"0A0A0A0A43434343\",\"0A0A0A0A3D3D3D3D\",\"0A0A0A0A38383838\",\"0A0A0A0A32323232\",\"0A0A0A0A2C2C2C2C\",\"0A0A0A0A27272727\",\"0A0A0A0A21212121\",\"0A0A0A0A1C1C1C1C\",\"0A0A0A0A16161616\",\"0A0A0A0A11111111\"]",
+    "[\"0A0A0A0A0B0B0B0B\",\"0A0A0A0A06060606\",\"0A0A0A0A00000000\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\",\"0A0A0A0A64646464\"]"
+  ]
+}

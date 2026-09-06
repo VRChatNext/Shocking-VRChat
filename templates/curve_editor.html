@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shocking VRChat - 曲线编辑器</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1321; color: #eef3ff; min-height: 100vh; padding: 24px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.header h1 { font-size: 1.4em; }
+.header a { color: #63b3ff; text-decoration: none; font-size: 0.9em; }
+.tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+.tabs button { padding: 8px 20px; border: 1px solid #2a3960; border-radius: 8px; background: #151d31; color: #95a4c7; cursor: pointer; font-size: 0.9em; }
+.tabs button.active { border-color: #63b3ff; color: #63b3ff; background: #1a2d50; }
+.editor { display: grid; grid-template-columns: 1fr 280px; gap: 20px; max-width: 1000px; }
+.canvas-wrap { position: relative; background: #151d31; border: 1px solid #2a3960; border-radius: 16px; padding: 16px; }
+.canvas-wrap canvas { display: block; width: 100%; height: 400px; cursor: crosshair; border-radius: 8px; background: #0a0f1a; }
+.canvas-hint { position: absolute; bottom: 24px; left: 24px; font-size: 0.75em; color: #555; }
+.panel { display: flex; flex-direction: column; gap: 12px; }
+.panel .card { background: #151d31; border: 1px solid #2a3960; border-radius: 12px; padding: 14px; }
+.panel h3 { font-size: 0.9em; margin-bottom: 10px; color: #95a4c7; }
+.point-list { max-height: 200px; overflow-y: auto; }
+.point-item { display: flex; align-items: center; gap: 6px; padding: 4px 0; font-size: 0.82em; font-family: monospace; }
+.point-item .idx { color: #555; width: 18px; }
+.point-item .coord { color: #bfccec; }
+.point-item button { border: none; background: #3a2020; color: #ff8b8b; border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 0.8em; }
+.btn { padding: 8px 16px; border: none; border-radius: 8px; font-size: 0.9em; cursor: pointer; color: #fff; }
+.btn-blue { background: linear-gradient(135deg, #4ea0ff, #357df1); }
+.btn-green { background: linear-gradient(135deg, #4ecb74, #2fa75b); }
+.btn-gray { background: linear-gradient(135deg, #53627f, #3f4d68); }
+.btn-red { background: linear-gradient(135deg, #ff6767, #e54848); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.msg { font-size: 0.82em; min-height: 1.4em; margin-top: 6px; }
+.msg.ok { color: #72e08f; }
+.msg.err { color: #ff8b8b; }
+.preset-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+.preset-btns button { padding: 5px 10px; border: 1px solid #2a3960; border-radius: 6px; background: #0f1a2e; color: #95a4c7; cursor: pointer; font-size: 0.8em; }
+.preset-btns button:hover { border-color: #63b3ff; color: #63b3ff; }
+@media (max-width: 720px) { .editor { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>📈 强度曲线编辑器</h1>
+  <a href="/dashboard">← 返回 Dashboard</a>
+</div>
+<div class="tabs" id="channel-tabs"></div>
+<div class="editor">
+  <div class="canvas-wrap">
+    <canvas id="curve-canvas"></canvas>
+    <div class="canvas-hint">适用于强度曲线模式 (distance) · 点击添加控制点 · 拖拽移动 · 右键删除</div>
+  </div>
+  <div class="panel">
+    <div class="card">
+      <h3>控制点</h3>
+      <div class="point-list" id="point-list"></div>
+    </div>
+    <div class="card">
+      <h3>预设曲线</h3>
+      <div class="preset-btns">
+        <button onclick="applyPreset('relu')">ReLU (默认)</button>
+        <button onclick="applyPreset('linear')">线性</button>
+        <button onclick="applyPreset('quadratic')">二次</button>
+        <button onclick="applyPreset('scurve')">S 曲线</button>
+        <button onclick="applyPreset('step')">阶梯</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>操作</h3>
+      <div class="actions">
+        <button class="btn btn-green" onclick="saveCurve()">保存</button>
+        <button class="btn btn-gray" onclick="loadCurve()">重新加载</button>
+        <button class="btn btn-red" onclick="resetCurve()">重置为 ReLU</button>
+      </div>
+      <div class="msg" id="msg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = window.location.origin;
+let channels = [];
+let activeChannel = 'a';
+let points = []; // [{x, y}] sorted by x, x/y in [0,1]
+let dragging = null;
+const canvas = document.getElementById('curve-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, ratio;
+
+const PRESETS = {
+  relu: [{x:0,y:0},{x:0.1,y:0},{x:1,y:1}],
+  linear: [{x:0,y:0},{x:1,y:1}],
+  quadratic: [{x:0,y:0},{x:0.25,y:0.0625},{x:0.5,y:0.25},{x:0.75,y:0.5625},{x:1,y:1}],
+  scurve: [{x:0,y:0},{x:0.25,y:0.06},{x:0.5,y:0.5},{x:0.75,y:0.94},{x:1,y:1}],
+  step: [{x:0,y:0},{x:0.29,y:0},{x:0.3,y:0.5},{x:0.69,y:0.5},{x:0.7,y:1},{x:1,y:1}],
+};
+
+function resize() {
+  ratio = window.devicePixelRatio || 1;
+  W = canvas.clientWidth;
+  H = canvas.clientHeight;
+  canvas.width = W * ratio;
+  canvas.height = H * ratio;
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  draw();
+}
+
+function toCanvas(x, y) { return [x * W, (1 - y) * H]; }
+function fromCanvas(cx, cy) { return [Math.max(0, Math.min(1, cx / W)), Math.max(0, Math.min(1, 1 - cy / H))]; }
+
+function interpolate(px, pts) {
+  if (pts.length === 0) return 0;
+  if (px <= pts[0].x) return pts[0].y;
+  if (px >= pts[pts.length - 1].x) return pts[pts.length - 1].y;
+  for (let i = 0; i < pts.length - 1; i++) {
+    if (px >= pts[i].x && px <= pts[i + 1].x) {
+      const t = (px - pts[i].x) / (pts[i + 1].x - pts[i].x);
+      return pts[i].y + t * (pts[i + 1].y - pts[i].y);
+    }
+  }
+  return 0;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  // Grid
+  ctx.strokeStyle = '#1a2540';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 10; i++) {
+    const x = (i / 10) * W, y = (i / 10) * H;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  // Axis labels
+  ctx.fillStyle = '#3a4a6a';
+  ctx.font = '11px monospace';
+  ctx.fillText('0', 4, H - 4);
+  ctx.fillText('1', W - 12, H - 4);
+  ctx.fillText('1', 4, 12);
+  ctx.fillText('参数值 →', W / 2 - 20, H - 4);
+  ctx.save(); ctx.translate(12, H / 2); ctx.rotate(-Math.PI / 2); ctx.fillText('强度 →', 0, 0); ctx.restore();
+  // Curve
+  ctx.beginPath();
+  for (let px = 0; px <= W; px++) {
+    const x = px / W;
+    const y = interpolate(x, points);
+    const [cx, cy] = toCanvas(x, y);
+    if (px === 0) ctx.moveTo(cx, cy); else ctx.lineTo(cx, cy);
+  }
+  ctx.strokeStyle = '#63b3ff';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+  // Fill under curve
+  ctx.lineTo(W, H);
+  ctx.lineTo(0, H);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(99,179,255,0.08)';
+  ctx.fill();
+  // Points
+  points.forEach((p, i) => {
+    const [cx, cy] = toCanvas(p.x, p.y);
+    ctx.beginPath();
+    ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+    ctx.fillStyle = dragging === i ? '#fff' : '#63b3ff';
+    ctx.fill();
+    ctx.strokeStyle = '#0d1321';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+  updatePointList();
+}
+
+function updatePointList() {
+  const el = document.getElementById('point-list');
+  el.innerHTML = points.map((p, i) =>
+    `<div class="point-item"><span class="idx">${i}</span><span class="coord">(${p.x.toFixed(3)}, ${p.y.toFixed(3)})</span><button onclick="removePoint(${i})">✕</button></div>`
+  ).join('');
+}
+
+function sortPoints() { points.sort((a, b) => a.x - b.x); }
+
+function findPoint(cx, cy) {
+  for (let i = 0; i < points.length; i++) {
+    const [px, py] = toCanvas(points[i].x, points[i].y);
+    if (Math.hypot(cx - px, cy - py) < 12) return i;
+  }
+  return -1;
+}
+
+function getMousePos(e) {
+  const r = canvas.getBoundingClientRect();
+  return [e.clientX - r.left, e.clientY - r.top];
+}
+
+canvas.addEventListener('mousedown', e => {
+  const [mx, my] = getMousePos(e);
+  if (e.button === 2) { // Right click delete
+    const idx = findPoint(mx, my);
+    if (idx >= 0) { points.splice(idx, 1); draw(); }
+    return;
+  }
+  const idx = findPoint(mx, my);
+  if (idx >= 0) { dragging = idx; }
+  else { // Add new point
+    const [x, y] = fromCanvas(mx, my);
+    points.push({x, y});
+    sortPoints();
+    dragging = points.findIndex(p => p.x === x && p.y === y);
+    draw();
+  }
+});
+
+canvas.addEventListener('mousemove', e => {
+  if (dragging === null) return;
+  const [mx, my] = getMousePos(e);
+  const [x, y] = fromCanvas(mx, my);
+  points[dragging] = {x, y};
+  sortPoints();
+  dragging = points.findIndex(p => p.x === x && p.y === y);
+  draw();
+});
+
+canvas.addEventListener('mouseup', () => { dragging = null; draw(); });
+canvas.addEventListener('mouseleave', () => { dragging = null; draw(); });
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+function removePoint(i) { points.splice(i, 1); draw(); }
+function applyPreset(name) { points = JSON.parse(JSON.stringify(PRESETS[name] || PRESETS.relu)); draw(); }
+function resetCurve() { applyPreset('relu'); }
+
+function showMsg(text, ok) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg ' + (ok ? 'ok' : 'err');
+  setTimeout(() => { el.textContent = ''; }, 3000);
+}
+
+async function loadCurve() {
+  try {
+    const resp = await fetch(`${API}/api/v1/curve/${activeChannel}`);
+    const data = await resp.json();
+    points = data.points || PRESETS.relu;
+    sortPoints();
+    draw();
+    showMsg('已加载', true);
+  } catch (e) { showMsg('加载失败', false); }
+}
+
+async function saveCurve() {
+  try {
+    const resp = await fetch(`${API}/api/v1/curve/${activeChannel}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({points}),
+    });
+    const data = await resp.json();
+    if (data.success) showMsg('已保存并生效', true);
+    else showMsg(data.message || '保存失败', false);
+  } catch (e) { showMsg('请求失败', false); }
+}
+
+async function initChannels() {
+  try {
+    const resp = await fetch(`${API}/api/v1/config`);
+    const data = await resp.json();
+    const basic = data.basic?.dglab3 || {};
+    const tabsEl = document.getElementById('channel-tabs');
+    ['a', 'b'].forEach(ch => {
+      const cfg = basic[`channel_${ch}`] || {};
+      const params = (cfg.avatar_params || []).map(p => typeof p === 'string' ? p : p.path);
+      const label = `Channel ${ch.toUpperCase()} (${cfg.mode || '?'})`;
+      const btn = document.createElement('button');
+      btn.textContent = label;
+      btn.onclick = () => switchChannel(ch);
+      btn.id = `tab-${ch}`;
+      tabsEl.appendChild(btn);
+    });
+    switchChannel('a');
+  } catch (e) { applyPreset('relu'); }
+}
+
+function switchChannel(ch) {
+  activeChannel = ch;
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${ch}`).classList.add('active');
+  loadCurve();
+}
+
+window.addEventListener('resize', resize);
+resize();
+initChannels();
+</script>
+</body>
+</html>

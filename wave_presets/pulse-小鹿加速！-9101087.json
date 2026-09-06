@@ -1,0 +1,310 @@
+{
+  "name": "pulse-小鹿加速！-9101087",
+  "source_file": "pulse-小鹿加速！-9101087.pulse",
+  "num_ops": 56,
+  "header": {
+    "rest_ticks": 99,
+    "speed": 4,
+    "param3": 8,
+    "raw": "99,4,8"
+  },
+  "preview_sections": [
+    {
+      "freq_low": 0,
+      "freq_high": 0,
+      "freq_mode": 1,
+      "duration": 49,
+      "n_points": 17,
+      "repeats": 3,
+      "points": [
+        {
+          "strength": 34,
+          "anchor": true
+        },
+        {
+          "strength": 45,
+          "anchor": true
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 50,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 45,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 60,
+          "anchor": true
+        },
+        {
+          "strength": 35,
+          "anchor": true
+        },
+        {
+          "strength": 50,
+          "anchor": true
+        },
+        {
+          "strength": 35,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 54,
+      "freq_mode": 1,
+      "duration": 36,
+      "n_points": 19,
+      "repeats": 2,
+      "points": [
+        {
+          "strength": 15,
+          "anchor": true
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": true
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 65,
+          "anchor": true
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 60,
+          "anchor": true
+        },
+        {
+          "strength": 50,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 60,
+          "anchor": true
+        },
+        {
+          "strength": 30,
+          "anchor": true
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 20,
+      "freq_mode": 1,
+      "duration": 20,
+      "n_points": 30,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 30,
+          "anchor": true
+        },
+        {
+          "strength": 45,
+          "anchor": true
+        },
+        {
+          "strength": 65,
+          "anchor": true
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 60,
+          "anchor": true
+        },
+        {
+          "strength": 50,
+          "anchor": true
+        },
+        {
+          "strength": 65,
+          "anchor": true
+        },
+        {
+          "strength": 70,
+          "anchor": true
+        },
+        {
+          "strength": 50,
+          "anchor": true
+        },
+        {
+          "strength": 60,
+          "anchor": true
+        },
+        {
+          "strength": 70,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 60,
+          "anchor": true
+        },
+        {
+          "strength": 70,
+          "anchor": true
+        },
+        {
+          "strength": 60,
+          "anchor": true
+        },
+        {
+          "strength": 70,
+          "anchor": true
+        },
+        {
+          "strength": 60,
+          "anchor": true
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 80,
+          "anchor": true
+        },
+        {
+          "strength": 65,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 65,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 60,
+          "anchor": true
+        },
+        {
+          "strength": 45,
+          "anchor": true
+        }
+      ]
+    }
+  ],
+  "wavestrs": [
+    "[\"0A0A0A0A222D2837\",\"0A0A0A0A37323728\",\"0A0A0A0A372D3737\",\"0A0A0A0A283C2332\",\"0A0A0A0A23222D28\",\"0A0A0A0A37373237\",\"0A0A0A0A28372D37\",\"0A0A0A0A37283C23\",\"0A0A0A0A3223222D\",\"0A0A0A0A28373732\",\"0A0A0A0A3728372D\",\"0A0A0A0A3737283C\",\"0A0A0A0A23322323\",\"0A0A0A0A0F1C2823\",\"0A0A0A0A1E304134\",\"0A0A0A0A28323C32\",\"0A0A0A0A373C1E14\",\"0A0A0A0A2828140F\",\"0A0A0A0A1C28231E\",\"0A0A0A0A30413428\",\"0A0A0A0A323C3237\",\"0A0A0A0A3C1E1428\",\"0A0A0A0A28141414\",\"0A0A0A0A281E2D41\",\"0A0A0A0A34283037\",\"0A0A0A0A4B3C3241\",\"0A0A0A0A46323C46\",\"0A0A0A0A373C463C\",\"0A0A0A0A463C4B50\",\"0A0A0A0A41374137\",\"0A0A0A0A3C2D2D2D\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\"]"
+  ]
+}

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shocking VRChat - OSC 录制/回放</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1321; color: #eef3ff; min-height: 100vh; padding: 24px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.header h1 { font-size: 1.4em; }
+.header a { color: #63b3ff; text-decoration: none; font-size: 0.9em; }
+.layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1000px; }
+.card { background: #151d31; border: 1px solid #2a3960; border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+.card h2 { font-size: 1em; margin-bottom: 14px; color: #95a4c7; }
+.btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 0.9em; cursor: pointer; color: #fff; margin-right: 8px; margin-bottom: 8px; }
+.btn-red { background: linear-gradient(135deg, #ff6767, #e54848); }
+.btn-green { background: linear-gradient(135deg, #4ecb74, #2fa75b); }
+.btn-blue { background: linear-gradient(135deg, #4ea0ff, #357df1); }
+.btn-gray { background: linear-gradient(135deg, #53627f, #3f4d68); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.status-indicator { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 20px; font-size: 0.85em; margin-bottom: 12px; }
+.status-idle { background: #1a2540; color: #666; }
+.status-recording { background: #3a1a1a; color: #ff8b8b; animation: pulse 1s infinite; }
+.status-playing { background: #1a3a2a; color: #72e08f; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+.dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot-idle { background: #444; }
+.dot-rec { background: #ff6b6b; }
+.dot-play { background: #72e08f; }
+.rec-info { font-size: 0.82em; color: #666; margin-top: 8px; }
+.file-list { max-height: 350px; overflow-y: auto; }
+.file-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #111a2e; font-size: 0.85em; }
+.file-item:hover { background: #1a2540; }
+.file-name { flex: 1; font-family: Consolas, monospace; color: #bfccec; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-meta { color: #555; font-size: 0.8em; min-width: 80px; text-align: right; }
+.file-actions { display: flex; gap: 4px; }
+.file-actions button { padding: 4px 10px; border: none; border-radius: 6px; font-size: 0.78em; cursor: pointer; color: #fff; }
+.file-btn-play { background: #2fa75b; }
+.file-btn-del { background: #8b3a3a; }
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; font-size: 0.82em; color: #666; margin-bottom: 4px; }
+.form-group select, .form-group input { width: 100%; padding: 8px; border: 1px solid #2a3960; border-radius: 8px; background: #0f1a2e; color: #eef3ff; font-size: 0.9em; }
+.range-row { display: flex; align-items: center; gap: 8px; }
+.range-row input { flex: 1; accent-color: #63b3ff; }
+.range-row .val { min-width: 40px; font-family: monospace; color: #63b3ff; text-align: right; }
+.progress-bar { height: 6px; background: #0a1020; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+.progress-bar .fill { height: 100%; background: #72e08f; transition: width 0.3s; }
+.msg { font-size: 0.8em; color: #72e08f; min-height: 1.2em; margin-top: 6px; }
+.msg.err { color: #ff8b8b; }
+@media (max-width: 720px) { .layout { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🎙 OSC 录制 / 回放</h1>
+  <a href="/dashboard">← 返回 Dashboard</a>
+</div>
+<div class="layout">
+  <div>
+    <div class="card">
+      <h2>录制</h2>
+      <div class="status-indicator status-idle" id="rec-status">
+        <span class="dot dot-idle" id="rec-dot"></span>
+        <span id="rec-text">待机</span>
+      </div>
+      <div>
+        <button class="btn btn-red" id="btn-rec-start" onclick="startRec()">⏺ 开始录制</button>
+        <button class="btn btn-gray" id="btn-rec-stop" onclick="stopRec()" disabled>⏹ 停止</button>
+      </div>
+      <div class="rec-info" id="rec-info"></div>
+      <div class="msg" id="rec-msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>回放控制</h2>
+      <div class="status-indicator status-idle" id="play-status">
+        <span class="dot dot-idle" id="play-dot"></span>
+        <span id="play-text">停止</span>
+      </div>
+      <div class="form-group">
+        <label>回放速度</label>
+        <div class="range-row">
+          <input type="range" id="play-speed" min="0.25" max="3" step="0.25" value="1">
+          <span class="val" id="play-speed-val">1.0x</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><input type="checkbox" id="play-loop"> 循环回放</label>
+      </div>
+      <div>
+        <button class="btn btn-gray" id="btn-play-stop" onclick="stopPlay()" disabled>⏹ 停止回放</button>
+      </div>
+      <div class="progress-bar"><div class="fill" id="play-progress" style="width:0%"></div></div>
+      <div class="rec-info" id="play-info"></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2>录制文件</h2>
+      <div class="file-list" id="file-list"></div>
+      <div class="msg" id="file-msg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = window.location.origin;
+
+document.getElementById('play-speed').oninput = function() {
+  document.getElementById('play-speed-val').textContent = parseFloat(this.value).toFixed(2) + 'x';
+};
+
+async function startRec() {
+  const resp = await fetch(`${API}/api/v1/recorder/start`, {method:'POST'});
+  const data = await resp.json();
+  if (data.success) showMsg('rec-msg', '录制中: ' + data.filename, false);
+  else showMsg('rec-msg', data.message, true);
+}
+
+async function stopRec() {
+  const resp = await fetch(`${API}/api/v1/recorder/stop`, {method:'POST'});
+  const data = await resp.json();
+  if (data.success) {
+    showMsg('rec-msg', `已保存: ${data.filename} (${data.message_count} 条, ${(data.duration_ms/1000).toFixed(1)}s)`, false);
+    loadFiles();
+  } else showMsg('rec-msg', data.message, true);
+}
+
+async function startPlay(filename) {
+  const speed = parseFloat(document.getElementById('play-speed').value);
+  const loop = document.getElementById('play-loop').checked;
+  const resp = await fetch(`${API}/api/v1/playback/start`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({filename, speed, loop}),
+  });
+  const data = await resp.json();
+  if (!data.success) showMsg('file-msg', data.message, true);
+}
+
+async function stopPlay() {
+  await fetch(`${API}/api/v1/playback/stop`, {method:'POST'});
+}
+
+async function deleteFile(filename) {
+  if (!confirm('删除 ' + filename + '？')) return;
+  await fetch(`${API}/api/v1/recordings/${encodeURIComponent(filename)}`, {method:'DELETE'});
+  loadFiles();
+}
+
+async function loadFiles() {
+  const resp = await fetch(`${API}/api/v1/recordings`);
+  const data = await resp.json();
+  const list = document.getElementById('file-list');
+  if (!data.recordings?.length) { list.innerHTML = '<div style="padding:16px;color:#444;text-align:center">无录制文件</div>'; return; }
+  list.innerHTML = data.recordings.map(f => `
+    <div class="file-item">
+      <span class="file-name" title="${f.name}">${f.name}</span>
+      <span class="file-meta">${f.message_count} 条 · ${(f.duration_ms/1000).toFixed(1)}s</span>
+      <div class="file-actions">
+        <button class="file-btn-play" onclick="startPlay('${f.name}')">▶</button>
+        <button class="file-btn-del" onclick="deleteFile('${f.name}')">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+async function pollStatus() {
+  // Recorder status
+  try {
+    const rResp = await fetch(`${API}/api/v1/recorder/status`);
+    const r = await rResp.json();
+    const recStatus = document.getElementById('rec-status');
+    const recDot = document.getElementById('rec-dot');
+    const recText = document.getElementById('rec-text');
+    const btnStart = document.getElementById('btn-rec-start');
+    const btnStop = document.getElementById('btn-rec-stop');
+    if (r.recording) {
+      recStatus.className = 'status-indicator status-recording';
+      recDot.className = 'dot dot-rec';
+      recText.textContent = `录制中 · ${r.message_count} 条 · ${(r.elapsed_ms/1000).toFixed(1)}s`;
+      btnStart.disabled = true; btnStop.disabled = false;
+    } else {
+      recStatus.className = 'status-indicator status-idle';
+      recDot.className = 'dot dot-idle';
+      recText.textContent = '待机';
+      btnStart.disabled = false; btnStop.disabled = true;
+    }
+  } catch(e) {}
+
+  // Playback status
+  try {
+    const pResp = await fetch(`${API}/api/v1/playback/status`);
+    const p = await pResp.json();
+    const playStatus = document.getElementById('play-status');
+    const playDot = document.getElementById('play-dot');
+    const playText = document.getElementById('play-text');
+    const btnPlayStop = document.getElementById('btn-play-stop');
+    const progressBar = document.getElementById('play-progress');
+    const playInfo = document.getElementById('play-info');
+    if (p.active) {
+      playStatus.className = 'status-indicator status-playing';
+      playDot.className = 'dot dot-play';
+      playText.textContent = `回放中 · ${p.filename}`;
+      btnPlayStop.disabled = false;
+      const pct = p.total > 0 ? (p.progress / p.total * 100) : 0;
+      progressBar.style.width = pct + '%';
+      playInfo.textContent = `${p.progress}/${p.total} · ${p.speed}x${p.loop ? ' · 循环' : ''}`;
+    } else {
+      playStatus.className = 'status-indicator status-idle';
+      playDot.className = 'dot dot-idle';
+      playText.textContent = '停止';
+      btnPlayStop.disabled = true;
+      progressBar.style.width = '0%';
+      playInfo.textContent = '';
+    }
+  } catch(e) {}
+}
+
+function showMsg(id, text, isErr) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg' + (isErr ? ' err' : '');
+  setTimeout(() => el.textContent = '', 5000);
+}
+
+loadFiles();
+pollStatus();
+setInterval(pollStatus, 1000);
+</script>
+</body>
+</html>

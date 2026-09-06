@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shocking VRChat - Combo 模式配置</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1321; color: #eef3ff; min-height: 100vh; padding: 24px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.header h1 { font-size: 1.4em; }
+.header a { color: #63b3ff; text-decoration: none; font-size: 0.9em; }
+.layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1000px; }
+.card { background: #151d31; border: 1px solid #2a3960; border-radius: 16px; padding: 20px; }
+.card h2 { font-size: 1em; margin-bottom: 14px; color: #95a4c7; }
+.tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+.tabs button { padding: 8px 20px; border: 1px solid #2a3960; border-radius: 8px; background: #151d31; color: #95a4c7; cursor: pointer; }
+.tabs button.active { border-color: #63b3ff; color: #63b3ff; background: #1a2d50; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 0.85em; color: #666; margin-bottom: 6px; }
+.form-group input, .form-group select { width: 100%; padding: 9px 12px; border: 1px solid #2a3960; border-radius: 8px; background: #0f1a2e; color: #eef3ff; font-size: 0.9em; }
+.form-group .hint { font-size: 0.75em; color: #444; margin-top: 4px; }
+.range-row { display: flex; align-items: center; gap: 10px; }
+.range-row input[type="range"] { flex: 1; accent-color: #63b3ff; }
+.range-row .val { min-width: 45px; text-align: right; font-family: monospace; color: #63b3ff; }
+.diagram { background: #0a0f1a; border-radius: 12px; padding: 20px; text-align: center; position: relative; min-height: 200px; }
+.timeline { display: flex; align-items: end; height: 140px; gap: 2px; padding: 0 20px; }
+.phase { display: flex; flex-direction: column; align-items: center; justify-content: end; border-radius: 6px 6px 0 0; transition: all 0.3s; position: relative; }
+.phase-shock { background: linear-gradient(180deg, #ff6b6b33, #ff6b6b11); border: 1px solid #ff6b6b44; flex: 1; min-height: 100px; }
+.phase-touch { background: linear-gradient(180deg, #72e08f33, #72e08f11); border: 1px solid #72e08f44; flex: 3; min-height: 60px; }
+.phase-label { position: absolute; bottom: 8px; font-size: 0.75em; white-space: nowrap; }
+.phase-shock .phase-label { color: #ff8b8b; }
+.phase-touch .phase-label { color: #72e08f; }
+.timeline-axis { display: flex; justify-content: space-between; padding: 6px 20px 0; font-size: 0.7em; color: #444; }
+.divider { width: 2px; background: #f6c760; height: 140px; position: relative; flex-shrink: 0; }
+.divider-label { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 0.7em; color: #f6c760; white-space: nowrap; }
+.btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 0.9em; cursor: pointer; color: #fff; }
+.btn-green { background: linear-gradient(135deg, #4ecb74, #2fa75b); }
+.btn-gray { background: linear-gradient(135deg, #53627f, #3f4d68); }
+.actions { display: flex; gap: 10px; margin-top: 16px; }
+.msg { font-size: 0.82em; min-height: 1.4em; margin-top: 8px; }
+.msg.ok { color: #72e08f; }
+.msg.err { color: #ff8b8b; }
+.section-title { font-size: 0.9em; font-weight: 600; color: #63b3ff; margin: 16px 0 10px; padding-top: 12px; border-top: 1px solid #1a2540; }
+@media (max-width: 720px) { .layout { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>⚡ Combo 模式配置</h1>
+  <a href="/dashboard">← 返回 Dashboard</a>
+</div>
+<div class="tabs" id="channel-tabs"></div>
+<div class="layout">
+  <div>
+    <div class="card">
+      <h2>组合逻辑</h2>
+      <div class="form-group">
+        <label>切换时长 (switch_duration)</label>
+        <div class="range-row">
+          <input type="range" id="switch-duration" min="0.1" max="1.5" step="0.05" value="0.3">
+          <span class="val" id="switch-duration-val">0.3s</span>
+        </div>
+        <div class="hint">触摸持续时间短于此值 → 触发 shock（一激灵）<br>长于此值 → 切到 touch（柔和抚摸）</div>
+      </div>
+
+      <div class="section-title">Shock 参数（短触发）</div>
+      <div class="form-group">
+        <label>电击持续时长 (duration)</label>
+        <div class="range-row">
+          <input type="range" id="shock-duration" min="0.5" max="5" step="0.1" value="2">
+          <span class="val" id="shock-duration-val">2.0s</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Shock 波形预设</label>
+        <select id="shock-preset"><option value="">默认（固定波形）</option></select>
+      </div>
+      <div class="form-group">
+        <label>Shock 波形强度 (wave_scale)</label>
+        <div class="range-row">
+          <input type="range" id="shock-scale" min="0" max="1" step="0.05" value="1">
+          <span class="val" id="shock-scale-val">1.0</span>
+        </div>
+      </div>
+
+      <div class="section-title">Touch 参数（持续触摸）</div>
+      <div class="form-group">
+        <label>Touch 波形预设</label>
+        <select id="touch-preset"><option value="">默认</option></select>
+      </div>
+      <div class="form-group">
+        <label>Touch 波形强度 (wave_scale)</label>
+        <div class="range-row">
+          <input type="range" id="touch-scale" min="0" max="1" step="0.05" value="0.35">
+          <span class="val" id="touch-scale-val">0.35</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>导数响应阶数 (n_derivative)</label>
+        <select id="touch-derivative">
+          <option value="0">0 - 距离（直接跟随参数值）</option>
+          <option value="1" selected>1 - 速度（对移动速度响应）</option>
+          <option value="2">2 - 加速度（对急停急起响应）</option>
+          <option value="3">3 - 急动度（对剧烈变化响应）</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-green" onclick="saveCombo()">保存配置</button>
+        <button class="btn btn-gray" onclick="loadCombo()">重新加载</button>
+      </div>
+      <div class="msg" id="msg"></div>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <h2>行为示意</h2>
+      <div class="diagram">
+        <div class="timeline">
+          <div class="phase phase-shock"><span class="phase-label">⚡ Shock<br>一激灵</span></div>
+          <div class="divider"><span class="divider-label" id="divider-label">0.3s</span></div>
+          <div class="phase phase-touch"><span class="phase-label">🤚 Touch<br>柔和抚摸</span></div>
+        </div>
+        <div class="timeline-axis">
+          <span>触摸开始</span>
+          <span>switch_duration</span>
+          <span>持续触摸 →</span>
+        </div>
+      </div>
+      <div style="margin-top:16px;font-size:0.82em;color:#666;line-height:1.6">
+        <p><strong style="color:#ff8b8b">碰一下就走</strong> → OSC 参数存在时间 &lt; switch_duration → 手离开时触发 shock</p>
+        <p><strong style="color:#72e08f">持续触摸</strong> → OSC 参数存在时间 ≥ switch_duration → 自动切到 touch 逻辑</p>
+        <p style="margin-top:8px;color:#555">两种行为使用各自独立的波形配置，互不干扰。</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h2>Trigger Range（全局）</h2>
+      <div class="form-group">
+        <label>触发下界 (bottom)</label>
+        <div class="range-row">
+          <input type="range" id="trigger-bottom" min="0" max="0.5" step="0.01" value="0">
+          <span class="val" id="trigger-bottom-val">0.00</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>触发上界 (top)</label>
+        <div class="range-row">
+          <input type="range" id="trigger-top" min="0.3" max="1" step="0.01" value="1">
+          <span class="val" id="trigger-top-val">1.00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = window.location.origin;
+let activeChannel = 'a';
+
+// Bind range inputs to their value displays
+document.querySelectorAll('.range-row input[type="range"]').forEach(input => {
+  const valEl = input.parentElement.querySelector('.val');
+  input.oninput = () => {
+    const v = parseFloat(input.value);
+    if (input.id === 'switch-duration') { valEl.textContent = v.toFixed(2) + 's'; document.getElementById('divider-label').textContent = v.toFixed(2) + 's'; }
+    else if (input.id.includes('duration')) valEl.textContent = v.toFixed(1) + 's';
+    else valEl.textContent = v.toFixed(2);
+  };
+});
+
+async function loadPresets() {
+  try {
+    const resp = await fetch(`${API}/api/v1/wave_presets`);
+    const data = await resp.json();
+    ['shock-preset', 'touch-preset'].forEach(id => {
+      const sel = document.getElementById(id);
+      const first = sel.options[0];
+      sel.innerHTML = '';
+      sel.appendChild(first);
+      (data.presets || []).forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name.replace(/^pulse-/, '').replace(/-\d+$/, '');
+        sel.appendChild(opt);
+      });
+    });
+  } catch(e) {}
+}
+
+async function loadCombo() {
+  try {
+    const resp = await fetch(`${API}/api/v1/combo/${activeChannel}`);
+    const data = await resp.json();
+    const c = data.combo || {};
+    const s = data.shock || {};
+    const t = data.touch || {};
+    const tr = data.trigger_range || {};
+
+    setVal('switch-duration', c.switch_duration ?? 0.3);
+    setVal('shock-duration', s.duration ?? 2);
+    setVal('shock-scale', s.wave_scale ?? 1.0);
+    setVal('touch-scale', t.wave_scale ?? 0.35);
+    setVal('trigger-bottom', tr.bottom ?? 0);
+    setVal('trigger-top', tr.top ?? 1);
+
+    document.getElementById('shock-preset').value = s.wave_preset || '';
+    document.getElementById('touch-preset').value = t.wave_preset || '';
+    document.getElementById('touch-derivative').value = t.n_derivative ?? 1;
+
+    showMsg('已加载', true);
+  } catch(e) { showMsg('加载失败', false); }
+}
+
+async function saveCombo() {
+  const payload = {
+    combo: { switch_duration: getNum('switch-duration') },
+    shock: {
+      duration: getNum('shock-duration'),
+      wave_preset: document.getElementById('shock-preset').value || null,
+      wave_scale: getNum('shock-scale'),
+    },
+    touch: {
+      wave_preset: document.getElementById('touch-preset').value || null,
+      wave_scale: getNum('touch-scale'),
+      n_derivative: parseInt(document.getElementById('touch-derivative').value),
+    },
+    trigger_range: {
+      bottom: getNum('trigger-bottom'),
+      top: getNum('trigger-top'),
+    },
+  };
+  try {
+    const resp = await fetch(`${API}/api/v1/combo/${activeChannel}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    if (data.success) showMsg('已保存并生效', true);
+    else showMsg(data.message || '保存失败', false);
+  } catch(e) { showMsg('请求失败', false); }
+}
+
+function setVal(id, val) {
+  const input = document.getElementById(id);
+  input.value = val;
+  input.dispatchEvent(new Event('input'));
+}
+function getNum(id) { return parseFloat(document.getElementById(id).value); }
+function showMsg(text, ok) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg ' + (ok ? 'ok' : 'err');
+  setTimeout(() => el.textContent = '', 3000);
+}
+
+async function initChannels() {
+  const tabsEl = document.getElementById('channel-tabs');
+  ['a', 'b'].forEach(ch => {
+    const btn = document.createElement('button');
+    btn.textContent = 'Channel ' + ch.toUpperCase();
+    btn.id = `tab-${ch}`;
+    btn.onclick = () => { activeChannel = ch; document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadCombo(); };
+    tabsEl.appendChild(btn);
+  });
+  document.getElementById('tab-a').classList.add('active');
+  await loadPresets();
+  await loadCombo();
+}
+
+initChannels();
+</script>
+</body>
+</html>

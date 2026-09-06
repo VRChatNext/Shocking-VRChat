@@ -1,0 +1,199 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [main, master]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: static/
+
+  build-pyinstaller:
+    needs: build-frontend
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: static/
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+        shell: pwsh
+
+      - name: Build with PyInstaller
+        run: pyinstaller --clean -y shocking_vrchat.spec
+        shell: pwsh
+
+      - name: Copy wave_presets alongside binary
+        run: |
+          Copy-Item -Recurse wave_presets dist\shocking_vrchat\wave_presets
+          Copy-Item -Recurse dg-lab dist\shocking_vrchat\dg-lab
+        shell: pwsh
+
+      - name: Show output size
+        run: |
+          $size = (Get-ChildItem -Recurse dist\shocking_vrchat | Measure-Object -Property Length -Sum).Sum / 1MB
+          Write-Host "PyInstaller output: $([math]::Round($size, 1)) MB"
+        shell: pwsh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shocking-vrchat-pyinstaller
+          path: dist/shocking_vrchat/
+
+  build-nuitka:
+    needs: build-frontend
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: static/
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install nuitka ordered-set zstandard
+        shell: pwsh
+
+      - name: Build with Nuitka
+        run: |
+          python -m nuitka `
+            --assume-yes-for-downloads `
+            --standalone `
+            --onefile `
+            --output-dir=dist_nuitka `
+            --output-filename=shocking_vrchat.exe `
+            --windows-console-mode=disable `
+            --windows-icon-from-ico=shocking_vrchat.ico `
+            --include-data-dir=static=static `
+            --include-data-dir=templates=templates `
+            --include-data-files=shocking_vrchat.ico=shocking_vrchat.ico `
+            --include-package=srv `
+            --include-package=pulse_to_hex `
+            --include-module=uvicorn.logging `
+            --include-module=uvicorn.loops.auto `
+            --include-module=uvicorn.protocols.http.auto `
+            --include-module=uvicorn.protocols.websockets.auto `
+            --include-module=uvicorn.lifespan.on `
+            --include-module=multipart.multipart `
+            --include-module=pydantic `
+            --include-module=pydantic_core `
+            --include-module=annotated_types `
+            --include-module=websockets.asyncio.server `
+            --include-module=pythonosc.osc_server `
+            --include-module=pythonosc.dispatcher `
+            --include-module=pythonosc.udp_client `
+            --include-module=pystray `
+            --include-module=pystray._win32 `
+            --include-module=PIL.Image `
+            --include-module=PIL.ImageDraw `
+            --nofollow-import-to=pytest `
+            --nofollow-import-to=unittest `
+            --nofollow-import-to=setuptools `
+            --nofollow-import-to=pip `
+            --nofollow-import-to=tkinter `
+            --nofollow-import-to=numpy `
+            --jobs=4 `
+            --lto=yes `
+            --remove-output `
+            shocking_vrchat.py
+        shell: pwsh
+
+      - name: Copy wave_presets alongside binary
+        run: |
+          Copy-Item -Recurse wave_presets dist_nuitka\wave_presets
+          Copy-Item -Recurse dg-lab dist_nuitka\dg-lab
+        shell: pwsh
+
+      - name: Show output size
+        run: |
+          $size = (Get-Item dist_nuitka\shocking_vrchat.exe).Length / 1MB
+          Write-Host "Nuitka output: $([math]::Round($size, 1)) MB (single file)"
+        shell: pwsh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shocking-vrchat-nuitka
+          path: dist_nuitka/
+
+  release:
+    needs: [build-pyinstaller, build-nuitka]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: shocking-vrchat-pyinstaller
+          path: pyinstaller-dist/
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: shocking-vrchat-nuitka
+          path: nuitka-dist/
+
+      - name: Package PyInstaller build
+        run: |
+          cd pyinstaller-dist
+          zip -r ../shocking_vrchat_windows_x64.zip .
+
+      - name: Package Nuitka build
+        run: |
+          cd nuitka-dist
+          zip -r ../shocking_vrchat_windows_x64_onefile.zip .
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            shocking_vrchat_windows_x64.zip
+            shocking_vrchat_windows_x64_onefile.zip
+          generate_release_notes: true
+          body: |
+            ## Downloads
+
+            | 文件 | 说明 |
+            |------|------|
+            | `shocking_vrchat_windows_x64.zip` | PyInstaller 目录版（解压即用） |
+            | `shocking_vrchat_windows_x64_onefile.zip` | Nuitka 单文件版（更小更快） |

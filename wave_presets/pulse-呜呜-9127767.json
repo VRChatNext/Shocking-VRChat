@@ -1,0 +1,180 @@
+{
+  "name": "pulse-呜呜-9127767",
+  "source_file": "pulse-呜呜-9127767.pulse",
+  "num_ops": 66,
+  "header": {
+    "rest_ticks": 99,
+    "speed": 4,
+    "param3": 8,
+    "raw": "99,4,8"
+  },
+  "preview_sections": [
+    {
+      "freq_low": 0,
+      "freq_high": 0,
+      "freq_mode": 1,
+      "duration": 77,
+      "n_points": 17,
+      "repeats": 5,
+      "points": [
+        {
+          "strength": 34,
+          "anchor": true
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 72,
+          "anchor": false
+        },
+        {
+          "strength": 81,
+          "anchor": false
+        },
+        {
+          "strength": 90,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 93,
+          "anchor": false
+        },
+        {
+          "strength": 86,
+          "anchor": false
+        },
+        {
+          "strength": 78,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 64,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 49,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 3,
+      "freq_high": 54,
+      "freq_mode": 1,
+      "duration": 70,
+      "n_points": 19,
+      "repeats": 4,
+      "points": [
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 94,
+          "anchor": false
+        },
+        {
+          "strength": 89,
+          "anchor": false
+        },
+        {
+          "strength": 83,
+          "anchor": false
+        },
+        {
+          "strength": 78,
+          "anchor": false
+        },
+        {
+          "strength": 72,
+          "anchor": false
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 61,
+          "anchor": false
+        },
+        {
+          "strength": 56,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 44,
+          "anchor": false
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 17,
+          "anchor": false
+        },
+        {
+          "strength": 11,
+          "anchor": false
+        },
+        {
+          "strength": 6,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        }
+      ]
+    }
+  ],
+  "wavestrs": [
+    "[\"0A0A0A0A222B343E\",\"0A0A0A0A48515A64\",\"0A0A0A0A5D564E47\",\"0A0A0A0A4039312A\",\"0A0A0A0A23222B34\",\"0A0A0A0A3E48515A\",\"0A0A0A0A645D564E\",\"0A0A0A0A47403931\",\"0A0A0A0A2A23222B\",\"0A0A0A0A343E4851\",\"0A0A0A0A5A645D56\",\"0A0A0A0A4E474039\",\"0A0A0A0A312A2322\",\"0A0A0A0A2B343E48\",\"0A0A0A0A515A645D\",\"0A0A0A0A564E4740\",\"0A0A0A0A39312A23\",\"0A0A0A0A222B343E\",\"0A0A0A0A48515A64\",\"0A0A0A0A5D564E47\",\"0A0A0A0A4039312A\",\"0A0A0A0A23232323\",\"0D0D0D0D645E5953\",\"0D0D0D0D4E48433D\",\"0D0D0D0D38322C27\",\"0D0D0D0D211C1611\",\"0D0D0D0D0B060064\",\"0D0D0D0D5E59534E\",\"0D0D0D0D48433D38\",\"0D0D0D0D322C2721\",\"0D0D0D0D1C16110B\",\"0D0D0D0D0600645E\",\"0D0D0D0D59534E48\",\"0D0D0D0D433D3832\",\"0D0D0D0D2C27211C\",\"0D0D0D0D16110B06\",\"0D0D0D0D00645E59\",\"0D0D0D0D534E4843\",\"0D0D0D0D3D38322C\",\"0D0D0D0D27211C16\",\"0D0D0D0D110B0600\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\"]"
+  ]
+}

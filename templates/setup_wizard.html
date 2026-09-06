@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shocking VRChat - 首次配置向导</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif; background: #1a1a2e; color: #e0e0e0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+.wizard { background: #16213e; border-radius: 16px; padding: 40px; max-width: 640px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+h1 { text-align: center; margin-bottom: 8px; color: #fff; font-size: 1.5em; }
+.subtitle { text-align: center; color: #888; margin-bottom: 32px; font-size: 0.9em; }
+.step { display: none; }
+.step.active { display: block; }
+.step-title { font-size: 1.1em; font-weight: 600; margin-bottom: 20px; color: #64b5f6; }
+.form-group { margin-bottom: 24px; }
+label { display: block; margin-bottom: 8px; font-size: 0.9em; color: #aaa; }
+select, input[type="number"], input[type="text"] { width: 100%; padding: 10px 12px; border: 1px solid #333; border-radius: 8px; background: #0f3460; color: #fff; font-size: 0.95em; font-family: inherit; }
+select:focus, input[type="number"]:focus, input[type="text"]:focus { outline: none; border-color: #64b5f6; }
+.param-list { max-height: 200px; overflow-y: auto; border: 1px solid #333; border-radius: 8px; padding: 8px; background: #0f3460; }
+.param-item { display: flex; align-items: center; padding: 6px 8px; border-radius: 4px; cursor: pointer; font-size: 0.85em; font-family: monospace; }
+.param-item:hover { background: #1a4a7a; }
+.param-item input[type="checkbox"] { margin-right: 8px; flex-shrink: 0; }
+.param-item.selected { background: #1a4a7a; }
+.custom-param { margin-top: 12px; display: flex; gap: 10px; }
+.custom-param input { flex: 1; padding: 8px; border: 1px solid #333; border-radius: 6px; background: #0f3460; color: #fff; font-size: 0.85em; font-family: monospace; }
+.custom-param button { padding: 8px 14px; border: none; border-radius: 6px; background: #4caf50; color: #fff; cursor: pointer; font-size: 0.85em; white-space: nowrap; }
+.btn-row { display: flex; justify-content: space-between; margin-top: 32px; gap: 12px; }
+.btn { padding: 12px 28px; border: none; border-radius: 8px; font-size: 0.95em; cursor: pointer; transition: background 0.2s; }
+.btn-next { background: #64b5f6; color: #000; font-weight: 600; }
+.btn-next:hover { background: #90caf9; }
+.btn-back { background: #333; color: #ccc; }
+.btn-back:hover { background: #444; }
+.btn-save { background: #4caf50; color: #fff; font-weight: 600; }
+.btn-save:hover { background: #66bb6a; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.progress { display: flex; justify-content: center; margin-bottom: 24px; gap: 8px; }
+.progress .dot { width: 10px; height: 10px; border-radius: 50%; background: #333; transition: background 0.3s; }
+.progress .dot.active { background: #64b5f6; }
+.progress .dot.done { background: #4caf50; }
+.channel-tab { display: flex; gap: 8px; margin-bottom: 20px; }
+.channel-tab button { flex: 1; padding: 10px; border: 1px solid #333; border-radius: 6px; background: #0f3460; color: #aaa; cursor: pointer; }
+.channel-tab button.active { border-color: #64b5f6; color: #64b5f6; background: #1a3a6a; }
+.hint { font-size: 0.8em; color: #666; margin-top: 8px; }
+.result { background: #0f3460; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 0.82em; white-space: pre-wrap; max-height: 260px; overflow-y: auto; line-height: 1.6; }
+.success-msg { text-align: center; padding: 20px 0; }
+.success-msg h2 { color: #4caf50; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="wizard">
+  <h1>⚡ Shocking VRChat</h1>
+  <p class="subtitle">首次配置向导 / Setup Wizard</p>
+  <div class="progress">
+    <div class="dot active" id="dot-0"></div>
+    <div class="dot" id="dot-1"></div>
+    <div class="dot" id="dot-2"></div>
+    <div class="dot" id="dot-3"></div>
+    <div class="dot" id="dot-4"></div>
+  </div>
+
+  <!-- Step 0: Channel A mode -->
+  <div class="step active" id="step-0">
+    <div class="step-title">Step 1 - 选择工作模式</div>
+    <div class="form-group">
+      <label>通道 A (Channel A) 模式</label>
+      <select id="mode-a">
+        <option value="distance">distance - 强度曲线模式（根据参数值映射强度曲线）</option>
+        <option value="shock">shock - 电击模式（触发后固定时长电击）</option>
+        <option value="touch">touch - 触摸模式（根据触摸速度控制强度）</option>
+        <option value="combo">combo - 组合模式（短触=电击，长摸=柔和）</option>
+        <option value="boost">boost - 强度增减模式（按住+N，松开恢复）</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>通道 B (Channel B) 模式</label>
+      <select id="mode-b">
+        <option value="distance">distance - 强度曲线模式（根据参数值映射强度曲线）</option>
+        <option value="shock">shock - 电击模式（触发后固定时长电击）</option>
+        <option value="touch">touch - 触摸模式（根据触摸速度控制强度）</option>
+        <option value="combo">combo - 组合模式（短触=电击，长摸=柔和）</option>
+        <option value="boost">boost - 强度增减模式（按住+N，松开恢复）</option>
+      </select>
+    </div>
+    <div class="btn-row">
+      <div></div>
+      <button class="btn btn-next" onclick="nextStep()">下一步 →</button>
+    </div>
+  </div>
+
+  <!-- Step 1: Channel A params -->
+  <div class="step" id="step-1">
+    <div class="step-title">Step 2 - 选择 OSC 监听参数</div>
+    <div class="channel-tab">
+      <button class="active" id="tab-a" onclick="switchParamTab('a')">通道 A</button>
+      <button id="tab-b" onclick="switchParamTab('b')">通道 B</button>
+    </div>
+    <div id="params-a">
+      <div class="param-list" id="param-list-a"></div>
+      <div class="custom-param">
+        <input type="text" id="custom-a" placeholder="/avatar/parameters/...">
+        <button onclick="addCustomParam('a')">添加</button>
+      </div>
+    </div>
+    <div id="params-b" style="display:none">
+      <div class="param-list" id="param-list-b"></div>
+      <div class="custom-param">
+        <input type="text" id="custom-b" placeholder="/avatar/parameters/...">
+        <button onclick="addCustomParam('b')">添加</button>
+      </div>
+    </div>
+    <p class="hint">勾选需要监听的参数，或手动输入自定义参数路径。支持通配符 *</p>
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="prevStep()">← 上一步</button>
+      <button class="btn btn-next" onclick="nextStep()">下一步 →</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Strength limit -->
+  <div class="step" id="step-2">
+    <div class="step-title">Step 3 - 强度限制</div>
+    <div class="form-group">
+      <label>通道 A 强度上限 (0-200)</label>
+      <input type="number" id="strength-a" value="100" min="0" max="200">
+      <p class="hint">程序将取该值与 APP 内设置的上限中较小的一个</p>
+    </div>
+    <div class="form-group">
+      <label>通道 B 强度上限 (0-200)</label>
+      <input type="number" id="strength-b" value="100" min="0" max="200">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="prevStep()">← 上一步</button>
+      <button class="btn btn-next" onclick="nextStep()">下一步 →</button>
+    </div>
+  </div>
+
+  <!-- Step 3: OSC port -->
+  <div class="step" id="step-3">
+    <div class="step-title">Step 4 - OSC 端口</div>
+    <div class="form-group">
+      <label>OSC 监听端口</label>
+      <input type="number" id="osc-port" value="9001" min="1024" max="65535">
+      <p class="hint">VRChat 默认发送 OSC 到 9001 端口。如果你有面捕软件占用了该端口，请修改为其他值（如 9021），并配合 osc-repeater 使用。</p>
+    </div>
+    <div class="form-group">
+      <label>OSC 监听地址</label>
+      <input type="text" id="osc-host" value="127.0.0.1">
+      <p class="hint">如果 VRChat 在同一台电脑上运行，保持 127.0.0.1。如果在其他设备上运行，改为 0.0.0.0</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="prevStep()">← 上一步</button>
+      <button class="btn btn-next" onclick="nextStep()">下一步 →</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Confirm & Save -->
+  <div class="step" id="step-4">
+    <div class="step-title">Step 5 - 确认配置</div>
+    <div class="result" id="config-preview"></div>
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="prevStep()">← 上一步</button>
+      <button class="btn btn-save" id="btn-save" onclick="saveConfig()">✓ 保存并启动</button>
+    </div>
+  </div>
+
+  <!-- Done -->
+  <div class="step" id="step-done" style="display:none">
+    <div class="success-msg">
+      <h2>✓ 配置完成！</h2>
+      <p>程序正在启动，请稍候...</p>
+      <p style="margin-top:12px;color:#888;font-size:0.85em">页面将自动跳转到 Dashboard</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const COMMON_PARAMS = [
+  { path: '/avatar/parameters/pcs/contact/enterPass', desc: 'PCS 入口触发（最常用）' },
+  { path: '/avatar/parameters/pcs/contact/proximityA', desc: 'PCS 接近A' },
+  { path: '/avatar/parameters/pcs/contact/proximityB', desc: 'PCS 接近B' },
+  { path: '/avatar/parameters/pcs/sps/pussy', desc: 'PCS 指定位置' },
+  { path: '/avatar/parameters/pcs/sps/ass', desc: 'PCS 指定位置' },
+  { path: '/avatar/parameters/pcs/sps/boobs', desc: 'PCS 指定位置' },
+  { path: '/avatar/parameters/pcs/sps/mouth', desc: 'PCS 指定位置' },
+  { path: '/avatar/parameters/pcs/smash-intensity', desc: 'PCS smash强度' },
+  { path: '/avatar/parameters/lms-penis-proximityA*', desc: 'LMS 1.2 触发' },
+  { path: '/avatar/parameters/lms/contact/proximity', desc: 'LMS 1.3 触发' },
+];
+
+let currentStep = 0;
+const totalSteps = 5;
+const selectedParams = { a: new Set(), b: new Set() };
+
+function initParamLists() {
+  ['a', 'b'].forEach(ch => {
+    const list = document.getElementById(`param-list-${ch}`);
+    list.innerHTML = '';
+    COMMON_PARAMS.forEach((p, i) => {
+      const div = document.createElement('div');
+      div.className = 'param-item';
+      div.innerHTML = `<input type="checkbox" id="param-${ch}-${i}" data-path="${p.path}"><span>${p.path}</span><span style="margin-left:auto;color:#666;font-size:0.8em">${p.desc}</span>`;
+      div.querySelector('input').addEventListener('change', function() {
+        if (this.checked) selectedParams[ch].add(p.path);
+        else selectedParams[ch].delete(p.path);
+      });
+      list.appendChild(div);
+    });
+    // Pre-select first param
+    const first = list.querySelector('input');
+    if (first) { first.checked = true; selectedParams[ch].add(COMMON_PARAMS[0].path); }
+  });
+}
+
+function switchParamTab(ch) {
+  document.getElementById('tab-a').className = ch === 'a' ? 'active' : '';
+  document.getElementById('tab-b').className = ch === 'b' ? 'active' : '';
+  document.getElementById('params-a').style.display = ch === 'a' ? '' : 'none';
+  document.getElementById('params-b').style.display = ch === 'b' ? '' : 'none';
+}
+
+function addCustomParam(ch) {
+  const input = document.getElementById(`custom-${ch}`);
+  const path = input.value.trim();
+  if (!path || !path.startsWith('/')) return;
+  selectedParams[ch].add(path);
+  const list = document.getElementById(`param-list-${ch}`);
+  const div = document.createElement('div');
+  div.className = 'param-item selected';
+  div.innerHTML = `<input type="checkbox" checked data-path="${path}"><span>${path}</span><span style="margin-left:auto;color:#4caf50;font-size:0.8em">自定义</span>`;
+  div.querySelector('input').addEventListener('change', function() {
+    if (this.checked) selectedParams[ch].add(path);
+    else selectedParams[ch].delete(path);
+  });
+  list.appendChild(div);
+  input.value = '';
+}
+
+function buildConfig() {
+  const modeA = document.getElementById('mode-a').value;
+  const modeB = document.getElementById('mode-b').value;
+  const strengthA = parseInt(document.getElementById('strength-a').value) || 100;
+  const strengthB = parseInt(document.getElementById('strength-b').value) || 100;
+  const paramsA = [...selectedParams.a];
+  const paramsB = [...selectedParams.b];
+  const oscPort = parseInt(document.getElementById('osc-port').value) || 9001;
+  const oscHost = document.getElementById('osc-host').value.trim() || '127.0.0.1';
+  return {
+    channel_a: { mode: modeA, strength_limit: strengthA, avatar_params: paramsA },
+    channel_b: { mode: modeB, strength_limit: strengthB, avatar_params: paramsB },
+    osc: { listen_port: oscPort, listen_host: oscHost },
+  };
+}
+
+function updatePreview() {
+  const cfg = buildConfig();
+  const lines = [
+    'dglab3:',
+    '  channel_a:',
+    `    mode: ${cfg.channel_a.mode}`,
+    `    strength_limit: ${cfg.channel_a.strength_limit}`,
+    '    avatar_params:',
+    ...cfg.channel_a.avatar_params.map(p => `    - ${p}`),
+    '  channel_b:',
+    `    mode: ${cfg.channel_b.mode}`,
+    `    strength_limit: ${cfg.channel_b.strength_limit}`,
+    '    avatar_params:',
+    ...cfg.channel_b.avatar_params.map(p => `    - ${p}`),
+    `version: v0.2`,
+    '',
+    'osc:',
+    `  listen_host: ${cfg.osc.listen_host}`,
+    `  listen_port: ${cfg.osc.listen_port}`,
+  ];
+  document.getElementById('config-preview').textContent = lines.join('\n');
+}
+
+function updateDots() {
+  for (let i = 0; i < totalSteps; i++) {
+    const dot = document.getElementById(`dot-${i}`);
+    dot.className = 'dot' + (i < currentStep ? ' done' : i === currentStep ? ' active' : '');
+  }
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+  document.getElementById(`step-${n}`).classList.add('active');
+  updateDots();
+  if (n === 3) updatePreview();
+}
+
+function nextStep() { if (currentStep < totalSteps - 1) { currentStep++; showStep(currentStep); } }
+function prevStep() { if (currentStep > 0) { currentStep--; showStep(currentStep); } }
+
+async function saveConfig() {
+  const btn = document.getElementById('btn-save');
+  btn.disabled = true;
+  btn.textContent = '保存中...';
+  const cfg = buildConfig();
+  try {
+    const resp = await fetch('/api/v1/setup', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(cfg) });
+    const data = await resp.json();
+    if (data.success) {
+      document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+      document.getElementById('step-done').style.display = 'block';
+      setTimeout(() => { window.location.href = '/dashboard'; }, 3000);
+    } else {
+      alert('保存失败: ' + (data.message || '未知错误'));
+      btn.disabled = false;
+      btn.textContent = '✓ 保存并启动';
+    }
+  } catch (e) {
+    alert('请求失败: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = '✓ 保存并启动';
+  }
+}
+
+initParamLists();
+</script>
+</body>
+</html>

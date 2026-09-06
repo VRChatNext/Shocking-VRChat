@@ -1,5 +1,11 @@
 # Project files
 settings*.yaml
+profiles/
+curve_config.yaml
+recordings/
+static/
+frontend/node_modules/
+frontend/dist/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -34,6 +40,7 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+!shocking_vrchat.spec
 
 # Installer logs
 pip-log.txt

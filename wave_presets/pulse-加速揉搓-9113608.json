@@ -1,0 +1,2802 @@
+{
+  "name": "pulse-加速揉搓-9113608",
+  "source_file": "pulse-加速揉搓-9113608.pulse",
+  "num_ops": 212,
+  "header": {
+    "rest_ticks": 99,
+    "speed": 4,
+    "param3": 8,
+    "raw": "99,4,8"
+  },
+  "preview_sections": [
+    {
+      "freq_low": 0,
+      "freq_high": 0,
+      "freq_mode": 1,
+      "duration": 50,
+      "n_points": 32,
+      "repeats": 2,
+      "points": [
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 69,
+          "anchor": false
+        },
+        {
+          "strength": 38,
+          "anchor": true
+        },
+        {
+          "strength": 69,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 17,
+          "anchor": true
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 73,
+          "anchor": false
+        },
+        {
+          "strength": 47,
+          "anchor": true
+        },
+        {
+          "strength": 73,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 24,
+          "anchor": true
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 77,
+          "anchor": false
+        },
+        {
+          "strength": 53,
+          "anchor": true
+        },
+        {
+          "strength": 77,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 23,
+          "anchor": true
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 78,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 54,
+      "freq_mode": 1,
+      "duration": 47,
+      "n_points": 30,
+      "repeats": 2,
+      "points": [
+        {
+          "strength": 10,
+          "anchor": true
+        },
+        {
+          "strength": 16,
+          "anchor": false
+        },
+        {
+          "strength": 21,
+          "anchor": false
+        },
+        {
+          "strength": 27,
+          "anchor": false
+        },
+        {
+          "strength": 32,
+          "anchor": false
+        },
+        {
+          "strength": 38,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": true
+        },
+        {
+          "strength": 37,
+          "anchor": false
+        },
+        {
+          "strength": 31,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 19,
+          "anchor": true
+        },
+        {
+          "strength": 31,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 54,
+          "anchor": false
+        },
+        {
+          "strength": 66,
+          "anchor": false
+        },
+        {
+          "strength": 78,
+          "anchor": true
+        },
+        {
+          "strength": 66,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 31,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 38,
+          "anchor": false
+        },
+        {
+          "strength": 47,
+          "anchor": false
+        },
+        {
+          "strength": 56,
+          "anchor": false
+        },
+        {
+          "strength": 64,
+          "anchor": false
+        },
+        {
+          "strength": 73,
+          "anchor": false
+        },
+        {
+          "strength": 82,
+          "anchor": false
+        },
+        {
+          "strength": 91,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 20,
+      "freq_mode": 1,
+      "duration": 13,
+      "n_points": 30,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 84,
+          "anchor": false
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 51,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 19,
+          "anchor": true
+        },
+        {
+          "strength": 46,
+          "anchor": false
+        },
+        {
+          "strength": 73,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 84,
+          "anchor": true
+        },
+        {
+          "strength": 74,
+          "anchor": false
+        },
+        {
+          "strength": 64,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": true
+        },
+        {
+          "strength": 53,
+          "anchor": false
+        },
+        {
+          "strength": 61,
+          "anchor": false
+        },
+        {
+          "strength": 68,
+          "anchor": false
+        },
+        {
+          "strength": 76,
+          "anchor": true
+        },
+        {
+          "strength": 65,
+          "anchor": false
+        },
+        {
+          "strength": 54,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 11,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 8,
+          "anchor": true
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 20,
+      "freq_mode": 1,
+      "duration": 20,
+      "n_points": 500,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 15,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": true
+        },
+        {
+          "strength": 34,
+          "anchor": false
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 11,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 11,
+          "anchor": false
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 34,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": true
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 27,
+          "anchor": false
+        },
+        {
+          "strength": 21,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": true
+        },
+        {
+          "strength": 32,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 65,
+          "anchor": true
+        },
+        {
+          "strength": 53,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": true
+        },
+        {
+          "strength": 40,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 60,
+          "anchor": false
+        },
+        {
+          "strength": 70,
+          "anchor": false
+        },
+        {
+          "strength": 80,
+          "anchor": true
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 53,
+          "anchor": false
+        },
+        {
+          "strength": 44,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": true
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 16,
+          "anchor": false
+        },
+        {
+          "strength": 10,
+          "anchor": true
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 34,
+          "anchor": false
+        },
+        {
+          "strength": 46,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 70,
+          "anchor": true
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 51,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 74,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": true
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": true
+        },
+        {
+          "strength": 44,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": true
+        },
+        {
+          "strength": 70,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": true
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 65,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": true
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 73,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": true
+        },
+        {
+          "strength": 90,
+          "anchor": false
+        },
+        {
+          "strength": 95,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 77,
+          "anchor": false
+        },
+        {
+          "strength": 53,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": true
+        },
+        {
+          "strength": 26,
+          "anchor": false
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 19,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": true
+        },
+        {
+          "strength": 32,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 65,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": true
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 63,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 70,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": true
+        },
+        {
+          "strength": 69,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 36,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 37,
+          "anchor": false
+        },
+        {
+          "strength": 46,
+          "anchor": false
+        },
+        {
+          "strength": 54,
+          "anchor": false
+        },
+        {
+          "strength": 63,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 80,
+          "anchor": true
+        },
+        {
+          "strength": 70,
+          "anchor": false
+        },
+        {
+          "strength": 60,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 49,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 76,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": true
+        },
+        {
+          "strength": 73,
+          "anchor": false
+        },
+        {
+          "strength": 61,
+          "anchor": false
+        },
+        {
+          "strength": 49,
+          "anchor": false
+        },
+        {
+          "strength": 37,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": true
+        },
+        {
+          "strength": 36,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 59,
+          "anchor": false
+        },
+        {
+          "strength": 70,
+          "anchor": true
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        },
+        {
+          "strength": 34,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 61,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": true
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 65,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": true
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 47,
+          "anchor": false
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 31,
+          "anchor": false
+        },
+        {
+          "strength": 23,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": true
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": true
+        },
+        {
+          "strength": 72,
+          "anchor": false
+        },
+        {
+          "strength": 60,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": true
+        },
+        {
+          "strength": 49,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 76,
+          "anchor": false
+        },
+        {
+          "strength": 90,
+          "anchor": true
+        },
+        {
+          "strength": 69,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 26,
+          "anchor": false
+        },
+        {
+          "strength": 5,
+          "anchor": true
+        },
+        {
+          "strength": 12,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": false
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": true
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 16,
+          "anchor": false
+        },
+        {
+          "strength": 10,
+          "anchor": true
+        },
+        {
+          "strength": 32,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": true
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 66,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": true
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 54,
+          "anchor": false
+        },
+        {
+          "strength": 66,
+          "anchor": false
+        },
+        {
+          "strength": 78,
+          "anchor": false
+        },
+        {
+          "strength": 90,
+          "anchor": true
+        },
+        {
+          "strength": 76,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 34,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        },
+        {
+          "strength": 30,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 60,
+          "anchor": false
+        },
+        {
+          "strength": 70,
+          "anchor": true
+        },
+        {
+          "strength": 60,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        },
+        {
+          "strength": 32,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 70,
+          "anchor": true
+        },
+        {
+          "strength": 61,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 44,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": true
+        },
+        {
+          "strength": 46,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 68,
+          "anchor": false
+        },
+        {
+          "strength": 79,
+          "anchor": false
+        },
+        {
+          "strength": 90,
+          "anchor": true
+        },
+        {
+          "strength": 75,
+          "anchor": false
+        },
+        {
+          "strength": 60,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": true
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 66,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 59,
+          "anchor": false
+        },
+        {
+          "strength": 51,
+          "anchor": false
+        },
+        {
+          "strength": 44,
+          "anchor": false
+        },
+        {
+          "strength": 36,
+          "anchor": false
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        },
+        {
+          "strength": 26,
+          "anchor": false
+        },
+        {
+          "strength": 31,
+          "anchor": false
+        },
+        {
+          "strength": 37,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 53,
+          "anchor": false
+        },
+        {
+          "strength": 59,
+          "anchor": false
+        },
+        {
+          "strength": 64,
+          "anchor": false
+        },
+        {
+          "strength": 70,
+          "anchor": true
+        },
+        {
+          "strength": 56,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 29,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": true
+        },
+        {
+          "strength": 26,
+          "anchor": false
+        },
+        {
+          "strength": 37,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 69,
+          "anchor": false
+        },
+        {
+          "strength": 80,
+          "anchor": true
+        },
+        {
+          "strength": 63,
+          "anchor": false
+        },
+        {
+          "strength": 47,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": true
+        },
+        {
+          "strength": 41,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 63,
+          "anchor": false
+        },
+        {
+          "strength": 74,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": true
+        },
+        {
+          "strength": 70,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": true
+        },
+        {
+          "strength": 34,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 80,
+          "anchor": true
+        },
+        {
+          "strength": 69,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 47,
+          "anchor": false
+        },
+        {
+          "strength": 36,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": true
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 70,
+          "anchor": false
+        },
+        {
+          "strength": 64,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 53,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 36,
+          "anchor": false
+        },
+        {
+          "strength": 31,
+          "anchor": false
+        },
+        {
+          "strength": 26,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 65,
+          "anchor": true
+        },
+        {
+          "strength": 59,
+          "anchor": false
+        },
+        {
+          "strength": 54,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 37,
+          "anchor": false
+        },
+        {
+          "strength": 32,
+          "anchor": false
+        },
+        {
+          "strength": 26,
+          "anchor": false
+        },
+        {
+          "strength": 21,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": true
+        },
+        {
+          "strength": 26,
+          "anchor": false
+        },
+        {
+          "strength": 37,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 59,
+          "anchor": false
+        },
+        {
+          "strength": 70,
+          "anchor": true
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 54,
+          "anchor": false
+        },
+        {
+          "strength": 46,
+          "anchor": false
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 31,
+          "anchor": false
+        },
+        {
+          "strength": 23,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": true
+        },
+        {
+          "strength": 18,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": false
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": false
+        },
+        {
+          "strength": 32,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": true
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 60,
+          "anchor": false
+        },
+        {
+          "strength": 68,
+          "anchor": false
+        },
+        {
+          "strength": 77,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": true
+        },
+        {
+          "strength": 77,
+          "anchor": false
+        },
+        {
+          "strength": 69,
+          "anchor": false
+        },
+        {
+          "strength": 61,
+          "anchor": false
+        },
+        {
+          "strength": 54,
+          "anchor": false
+        },
+        {
+          "strength": 46,
+          "anchor": false
+        },
+        {
+          "strength": 38,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": true
+        },
+        {
+          "strength": 36,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 49,
+          "anchor": false
+        },
+        {
+          "strength": 56,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 69,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 65,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": true
+        },
+        {
+          "strength": 34,
+          "anchor": false
+        },
+        {
+          "strength": 43,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 71,
+          "anchor": false
+        },
+        {
+          "strength": 80,
+          "anchor": true
+        },
+        {
+          "strength": 73,
+          "anchor": false
+        },
+        {
+          "strength": 66,
+          "anchor": false
+        },
+        {
+          "strength": 59,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 46,
+          "anchor": false
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 32,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": true
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 66,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": true
+        },
+        {
+          "strength": 39,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 67,
+          "anchor": false
+        },
+        {
+          "strength": 76,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": true
+        },
+        {
+          "strength": 70,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 10,
+          "anchor": true
+        },
+        {
+          "strength": 14,
+          "anchor": false
+        },
+        {
+          "strength": 18,
+          "anchor": false
+        },
+        {
+          "strength": 22,
+          "anchor": false
+        },
+        {
+          "strength": 26,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": false
+        },
+        {
+          "strength": 34,
+          "anchor": false
+        },
+        {
+          "strength": 38,
+          "anchor": false
+        },
+        {
+          "strength": 41,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 49,
+          "anchor": false
+        },
+        {
+          "strength": 53,
+          "anchor": false
+        },
+        {
+          "strength": 57,
+          "anchor": false
+        },
+        {
+          "strength": 61,
+          "anchor": false
+        },
+        {
+          "strength": 65,
+          "anchor": true
+        },
+        {
+          "strength": 56,
+          "anchor": false
+        },
+        {
+          "strength": 47,
+          "anchor": false
+        },
+        {
+          "strength": 38,
+          "anchor": false
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 19,
+          "anchor": false
+        },
+        {
+          "strength": 10,
+          "anchor": true
+        },
+        {
+          "strength": 23,
+          "anchor": false
+        },
+        {
+          "strength": 37,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 63,
+          "anchor": false
+        },
+        {
+          "strength": 77,
+          "anchor": false
+        },
+        {
+          "strength": 90,
+          "anchor": true
+        },
+        {
+          "strength": 72,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 38,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 65,
+          "anchor": false
+        },
+        {
+          "strength": 80,
+          "anchor": true
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": true
+        },
+        {
+          "strength": 31,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 64,
+          "anchor": false
+        },
+        {
+          "strength": 80,
+          "anchor": true
+        },
+        {
+          "strength": 65,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": true
+        },
+        {
+          "strength": 44,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 61,
+          "anchor": false
+        },
+        {
+          "strength": 70,
+          "anchor": true
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": false
+        },
+        {
+          "strength": 10,
+          "anchor": true
+        },
+        {
+          "strength": 26,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 59,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": true
+        },
+        {
+          "strength": 64,
+          "anchor": false
+        },
+        {
+          "strength": 53,
+          "anchor": false
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 31,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        },
+        {
+          "strength": 30,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": true
+        },
+        {
+          "strength": 38,
+          "anchor": false
+        },
+        {
+          "strength": 27,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": true
+        },
+        {
+          "strength": 31,
+          "anchor": false
+        },
+        {
+          "strength": 48,
+          "anchor": false
+        },
+        {
+          "strength": 64,
+          "anchor": false
+        },
+        {
+          "strength": 80,
+          "anchor": true
+        },
+        {
+          "strength": 72,
+          "anchor": false
+        },
+        {
+          "strength": 65,
+          "anchor": false
+        },
+        {
+          "strength": 58,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": true
+        },
+        {
+          "strength": 59,
+          "anchor": false
+        },
+        {
+          "strength": 68,
+          "anchor": false
+        },
+        {
+          "strength": 76,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": true
+        },
+        {
+          "strength": 70,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": true
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 65,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": false
+        },
+        {
+          "strength": 85,
+          "anchor": true
+        },
+        {
+          "strength": 78,
+          "anchor": false
+        },
+        {
+          "strength": 70,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 69,
+          "anchor": false
+        },
+        {
+          "strength": 76,
+          "anchor": false
+        },
+        {
+          "strength": 83,
+          "anchor": false
+        },
+        {
+          "strength": 90,
+          "anchor": true
+        },
+        {
+          "strength": 68,
+          "anchor": false
+        },
+        {
+          "strength": 47,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": true
+        },
+        {
+          "strength": 44,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 81,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 20,
+      "freq_mode": 1,
+      "duration": 20,
+      "n_points": 50,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 5,
+          "anchor": false
+        },
+        {
+          "strength": 10,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 30,
+          "anchor": false
+        },
+        {
+          "strength": 35,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": true
+        },
+        {
+          "strength": 42,
+          "anchor": false
+        },
+        {
+          "strength": 33,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 17,
+          "anchor": false
+        },
+        {
+          "strength": 8,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 96,
+          "anchor": false
+        },
+        {
+          "strength": 91,
+          "anchor": false
+        },
+        {
+          "strength": 87,
+          "anchor": false
+        },
+        {
+          "strength": 82,
+          "anchor": false
+        },
+        {
+          "strength": 78,
+          "anchor": false
+        },
+        {
+          "strength": 74,
+          "anchor": false
+        },
+        {
+          "strength": 69,
+          "anchor": false
+        },
+        {
+          "strength": 65,
+          "anchor": true
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 3,
+          "anchor": false
+        },
+        {
+          "strength": 6,
+          "anchor": false
+        },
+        {
+          "strength": 9,
+          "anchor": false
+        },
+        {
+          "strength": 11,
+          "anchor": false
+        },
+        {
+          "strength": 14,
+          "anchor": false
+        },
+        {
+          "strength": 17,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": true
+        },
+        {
+          "strength": 36,
+          "anchor": false
+        },
+        {
+          "strength": 52,
+          "anchor": false
+        },
+        {
+          "strength": 68,
+          "anchor": false
+        },
+        {
+          "strength": 84,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 83,
+          "anchor": false
+        },
+        {
+          "strength": 66,
+          "anchor": false
+        },
+        {
+          "strength": 49,
+          "anchor": false
+        },
+        {
+          "strength": 32,
+          "anchor": false
+        },
+        {
+          "strength": 15,
+          "anchor": true
+        },
+        {
+          "strength": 12,
+          "anchor": false
+        },
+        {
+          "strength": 9,
+          "anchor": false
+        },
+        {
+          "strength": 6,
+          "anchor": false
+        },
+        {
+          "strength": 3,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        }
+      ]
+    },
+    {
+      "freq_low": 0,
+      "freq_high": 20,
+      "freq_mode": 1,
+      "duration": 20,
+      "n_points": 39,
+      "repeats": 1,
+      "points": [
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 12,
+          "anchor": false
+        },
+        {
+          "strength": 25,
+          "anchor": false
+        },
+        {
+          "strength": 38,
+          "anchor": false
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 75,
+          "anchor": false
+        },
+        {
+          "strength": 88,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 10,
+          "anchor": true
+        },
+        {
+          "strength": 21,
+          "anchor": false
+        },
+        {
+          "strength": 32,
+          "anchor": false
+        },
+        {
+          "strength": 44,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": false
+        },
+        {
+          "strength": 66,
+          "anchor": false
+        },
+        {
+          "strength": 78,
+          "anchor": false
+        },
+        {
+          "strength": 89,
+          "anchor": false
+        },
+        {
+          "strength": 100,
+          "anchor": true
+        },
+        {
+          "strength": 50,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 13,
+          "anchor": false
+        },
+        {
+          "strength": 27,
+          "anchor": false
+        },
+        {
+          "strength": 40,
+          "anchor": true
+        },
+        {
+          "strength": 30,
+          "anchor": false
+        },
+        {
+          "strength": 20,
+          "anchor": false
+        },
+        {
+          "strength": 10,
+          "anchor": true
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 45,
+          "anchor": false
+        },
+        {
+          "strength": 62,
+          "anchor": false
+        },
+        {
+          "strength": 80,
+          "anchor": true
+        },
+        {
+          "strength": 40,
+          "anchor": false
+        },
+        {
+          "strength": 0,
+          "anchor": true
+        },
+        {
+          "strength": 9,
+          "anchor": false
+        },
+        {
+          "strength": 18,
+          "anchor": false
+        },
+        {
+          "strength": 28,
+          "anchor": false
+        },
+        {
+          "strength": 37,
+          "anchor": false
+        },
+        {
+          "strength": 46,
+          "anchor": false
+        },
+        {
+          "strength": 55,
+          "anchor": true
+        }
+      ]
+    }
+  ],
+  "wavestrs": [
+    "[\"0A0A0A0A0019324B\",\"0A0A0A0A64452645\",\"0A0A0A0A643A113A\",\"0A0A0A0A64492F49\",\"0A0A0A0A643E183E\",\"0A0A0A0A644D354D\",\"0A0A0A0A643E173E\",\"0A0A0A0A644E3900\",\"0A0A0A0A0019324B\",\"0A0A0A0A64452645\",\"0A0A0A0A643A113A\",\"0A0A0A0A64492F49\",\"0A0A0A0A643E183E\",\"0A0A0A0A644D354D\",\"0A0A0A0A643E173E\",\"0A0A0A0A644E3900\",\"0A0A0A0A0A10151B\",\"0A0A0A0A20262B25\",\"0A0A0A0A1F19131F\",\"0A0A0A0A2A36424E\",\"0A0A0A0A42372B1F\",\"0A0A0A0A141D262F\",\"0A0A0A0A38404952\",\"0A0A0A0A5B640A10\",\"0A0A0A0A151B2026\",\"0A0A0A0A2B251F19\",\"0A0A0A0A131F2A36\",\"0A0A0A0A424E4237\",\"0A0A0A0A2B1F141D\",\"0A0A0A0A262F3840\",\"0A0A0A0A49525B64\",\"0A0A0A0A64544333\",\"0A0A0A0A23132E49\",\"0A0A0A0A64544A40\",\"0A0A0A0A372D353D\",\"0A0A0A0A444C4136\",\"0A0A0A0A2B21160B\",\"0A0A0A0A00642808\",\"0A0A0A0A64000000\",\"0A0A0A0A000F1E2D\",\"0A0A0A0A22160B00\",\"0A0A0A0A0B16222D\",\"0A0A0A0A27211B15\",\"0A0A0A0A0F203041\",\"0A0A0A0A352A1E28\",\"0A0A0A0A323C4650\",\"0A0A0A0A473E352C\",\"0A0A0A0A231D1610\",\"0A0A0A0A0A16222E\",\"0A0A0A0A3A463E37\",\"0A0A0A0A3028333E\",\"0A0A0A0A4A554330\",\"0A0A0A0A1E2C3A47\",\"0A0A0A0A55463728\",\"0A0A0A0A19232D37\",\"0A0A0A0A414B433A\",\"0A0A0A0A323E4955\",\"0A0A0A0A5A5F644D\",\"0A0A0A0A351E1A16\",\"0A0A0A0A130F2030\",\"0A0A0A0A41372D23\",\"0A0A0A0A192A3A4B\",\"0A0A0A0A3F342837\",\"0A0A0A0A46554534\",\"0A0A0A0A24141D25\",\"0A0A0A0A2E363F47\",\"0A0A0A0A50463C32\",\"0A0A0A0A28313A43\",\"0A0A0A0A4C55493D\",\"0A0A0A0A31251924\",\"0A0A0A0A303B462D\",\"0A0A0A0A1422303D\",\"0A0A0A0A4B3E3023\",\"0A0A0A0A303E4B41\",\"0A0A0A0A372D2319\",\"0A0A0A0A0F161C23\",\"0A0A0A0A2A30372F\",\"0A0A0A0A271F170F\",\"0A0A0A0A1D2B3947\",\"0A0A0A0A55483C30\",\"0A0A0A0A23313E4C\",\"0A0A0A0A5A45301A\",\"0A0A0A0A050C141C\",\"0A0A0A0A231D1610\",\"0A0A0A0A0A20372D\",\"0A0A0A0A23192A3A\"]",
+    "[\"0A0A0A0A4B423930\",\"0A0A0A0A271E2A36\",\"0A0A0A0A424E5A4C\",\"0A0A0A0A3E302214\",\"0A0A0A0A1E28323C\",\"0A0A0A0A463C3228\",\"0A0A0A0A1E14202D\",\"0A0A0A0A3A463D34\",\"0A0A0A0A2C232E39\",\"0A0A0A0A444F5A4B\",\"0A0A0A0A3C2D1E27\",\"0A0A0A0A3039424B\",\"0A0A0A0A433B332C\",\"0A0A0A0A241C141A\",\"0A0A0A0A1F252A30\",\"0A0A0A0A353B4046\",\"0A0A0A0A382A1D0F\",\"0A0A0A0A1A25303A\",\"0A0A0A0A45503F2F\",\"0A0A0A0A1E29343F\",\"0A0A0A0A4A554637\",\"0A0A0A0A2819222B\",\"0A0A0A0A343E4750\",\"0A0A0A0A453A2F24\",\"0A0A0A0A19212A32\",\"0A0A0A0A3A434B46\",\"0A0A0A0A403A3530\",\"0A0A0A0A2A241F1A\",\"0A0A0A0A141C232A\",\"0A0A0A0A323A413B\",\"0A0A0A0A36302B25\",\"0A0A0A0A201A150F\",\"0A0A0A0A1A25303B\",\"0A0A0A0A463E362E\",\"0A0A0A0A271F170F\",\"0A0A0A0A12141619\",\"0A0A0A0A1C1E2023\",\"0A0A0A0A2B343C44\",\"0A0A0A0A4D554D45\",\"0A0A0A0A3D362E26\",\"0A0A0A0A1E242B31\",\"0A0A0A0A383E454B\",\"0A0A0A0A41372D23\",\"0A0A0A0A19222B34\",\"0A0A0A0A3E475049\",\"0A0A0A0A423B342E\",\"0A0A0A0A27201921\",\"0A0A0A0A2A323A43\",\"0A0A0A0A4B423930\",\"0A0A0A0A271E2730\",\"0A0A0A0A3A434C55\",\"0A0A0A0A46372819\",\"0A0A0A0A0A0E1216\",\"0A0A0A0A1A1E2226\",\"0A0A0A0A292D3135\",\"0A0A0A0A393D4138\",\"0A0A0A0A2F261C13\",\"0A0A0A0A0A172532\",\"0A0A0A0A3F4D5A48\",\"0A0A0A0A37261423\",\"0A0A0A0A32415030\",\"0A0A0A0A0F1F3040\",\"0A0A0A0A50413223\",\"0A0A0A0A2C343D46\",\"0A0A0A0A321E0A1A\",\"0A0A0A0A2A3B4B40\",\"0A0A0A0A352A1F14\",\"0A0A0A0A1E283226\",\"0A0A0A0A1B0F1F30\",\"0A0A0A0A40504841\",\"0A0A0A0A3A323B44\",\"0A0A0A0A4C554637\",\"0A0A0A0A2819232D\",\"0A0A0A0A37414B55\",\"0A0A0A0A4E463E37\",\"0A0A0A0A3E454C53\",\"0A0A0A0A5A442F19\",\"0A0A0A0A2C3E5164\",\"0A0A0A0A00050A0F\",\"0A0A0A0A14191E23\",\"0A0A0A0A282D322A\",\"0A0A0A0A21191108\",\"0A0A0A0A00006460\",\"0A0A0A0A5B57524E\",\"0A0A0A0A4A454100\",\"0A0A0A0A0306090B\"]",
+    "[\"0A0A0A0A0E111424\",\"0A0A0A0A34445464\",\"0A0A0A0A53423120\",\"0A0A0A0A0F0C0906\",\"0A0A0A0A03000000\",\"0A0A0A0A000C1926\",\"0A0A0A0A323E4B58\",\"0A0A0A0A64370A15\",\"0A0A0A0A202C3742\",\"0A0A0A0A4E596432\",\"0A0A0A0A000D1B28\",\"0A0A0A0A1E140A1C\",\"0A0A0A0A2D3E5028\",\"0A0A0A0A0009121C\",\"0A0A0A0A252E3737\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\",\"0000000000000000\"]"
+  ]
+}
